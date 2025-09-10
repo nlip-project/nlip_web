@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NLIP Message Sender</title>
+  <link rel="stylesheet" href="/static/styles.css" />
+</head>
+<body>
+  <div class="form-container">
+    <h2>Send NLIP Message</h2>
+    <form id="nlipForm">
+      <label for="content">Content</label>
+      <input type="text" id="content" name="content" required />
+
+      <label for="language">Language</label>
+      <input type="text" id="language" name="language" value="english" required />
+
+      <button type="submit">Send</button>
+      <div class="status" id="status"></div>
+    </form>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
