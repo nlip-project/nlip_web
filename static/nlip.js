@@ -56,7 +56,7 @@ class NLIP_MESSAGE {
 }
 
 class NLIP_FACTORY {
-  static create_text(messageType, language='english', content, label = null) {
+  static create_text(messageType, language='English', content, label = null) {
     return new NLIP_MESSAGE(messageType, AllowedFormats.text, language, content, label);
   }
 
@@ -112,3 +112,5 @@ class NLIP_FACTORY {
     return new NLIP_MESSAGE(messageType, AllowedFormats.generic, subformat, content, label);
   }
 }
+
+export { NLIP_MESSAGE, NLIP_FACTORY, AllowedFormats };
