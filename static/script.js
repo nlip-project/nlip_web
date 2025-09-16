@@ -1,3 +1,5 @@
+import { NLIP_FACTORY } from './nlip.js';
+
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
 const chatBox = document.getElementById('chat-box');
@@ -23,11 +25,7 @@ form.addEventListener('submit', async (e) => {
   chatBox.appendChild(pair);
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  const nlipMessage = { "messagetype": "text", 
-    "format": "text",
-    "subformat": "English",
-    "content": message,
-   }
+  const nlipMessage = NLIP_FACTORY.create_text("text", "English", message);
 
 
 
@@ -39,7 +37,7 @@ form.addEventListener('submit', async (e) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify(nlipMessage)
+      body: nlipMessage.jsonSerialize()
     });
 
     const data = await response.json();
