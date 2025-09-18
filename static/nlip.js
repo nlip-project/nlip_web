@@ -4,7 +4,6 @@ const AllowedFormats = {
   structured: "structured",
   binary: "binary",
   location: "location",
-  error: "error",
   generic: "generic"
 }
 
@@ -100,12 +99,8 @@ class NLIP_FACTORY {
     return new NLIP_MESSAGE(messageType, AllowedFormats.location, "gps", location, label);
   }
 
-  static create_error_code(messageType, errorCode, label = null) {
-    return new NLIP_MESSAGE(messageType, AllowedFormats.error, "code", errorCode, label);
-  }
-
-  static create_error_text(messageType, errorDesc, label = null) {
-    return new NLIP_MESSAGE(messageType, AllowedFormats.error, "text", errorDesc, label);
+  static create_error(messageType, errorCode, label = null, language = 'english', errorLabel = 'errorCode:') {
+    return createText(messageType, language, errorLabel + errorCode, label);
   }
 
   static create_generic(messageType, subformat, content, label = null) {
