@@ -1,8 +1,20 @@
-import { NLIP_FACTORY } from './nlip.js';
+import { NLIP_Factory} from './save/script.js'
 
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
+const file = document.getElementById('file-input');
 const chatBox = document.getElementById('chat-box');
+
+file.addEventListener('change', () => {
+  const fileList = document.getElementById('file-list');
+  fileList.innerHTML = '';
+  Array.from(file.files).forEach(f => {
+    const li = document.createElement('li');
+    li.textContent = f.name;
+    fileList.appendChild(li);
+  });
+});
+
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -25,9 +37,12 @@ form.addEventListener('submit', async (e) => {
   chatBox.appendChild(pair);
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  const nlipMessage = NLIP_FACTORY.create_text("text", "English", message);
+  const nlipMessage = NLIP_Factory.createText(message);
 
-
+  if (file.files.length > 0) {
+    const fileData = file.files[0];
+    nlipMessage.addImage(fileData, "png");
+  }
 
   input.value = '';
 
@@ -37,7 +52,7 @@ form.addEventListener('submit', async (e) => {
       headers: {
         'Content-Type': 'application/json'
       },
-      body: nlipMessage.jsonSerialize()
+      body: nlipMessage.toJSON()
     });
 
     const data = await response.json();

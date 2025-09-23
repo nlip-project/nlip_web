@@ -7,6 +7,14 @@ body {
   height: 100vh;
 }
 
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+
 .chat-container {
   width: 420px;
   background: white;
@@ -52,6 +60,25 @@ body {
 form {
   display: flex;
   border-top: 1px solid #ddd;
+}
+
+input[type="file"] {
+  display:none;
+}
+
+.file-label {
+  padding: 12px;
+  background: #eee;
+  color: #333;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-left: 8px;
+  border: 1px solid #ddd;
+  transition: background 0.2s;
+}
+.file-label:hover {
+  background: #007bff;
+  color: white;
 }
 
 input[type="text"] {
