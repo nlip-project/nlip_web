@@ -8,7 +8,7 @@ body {
 }
 
 .chat-container {
-  width: 420px;
+  width: 100vw;
   background: white;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -30,11 +30,11 @@ body {
 }
 
 .user-bubble {
-  background-color: #007bff;
+  background-color: #32caec;
   color: white;
   padding: 10px 14px;
-  border-radius: 20px;
-  max-width: 70%;
+  border-radius: 6px;
+  max-width: 90%;
   align-self: flex-end;
   margin-left: auto;
 }
@@ -63,7 +63,7 @@ input[type="text"] {
 
 button {
   padding: 12px;
-  background: #007bff;
+  background: #32caec;
   color: white;
   border: none;
   cursor: pointer;
