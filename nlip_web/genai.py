@@ -58,6 +58,11 @@ class OllamaClient(GenAI):
         data = {"model": self.model, "prompt": prompt, "stream": False}
         results = self._base_httpx_call("generate", data)
         return results["response"]
+    
+    def generate_with_image(self, prompt: str, images: list, **kwargs) -> str:
+        data = {"model": self.model, "prompt": prompt, "stream": False, "images": images}
+        results = self._base_httpx_call("generate", data)
+        return results["response"]
 
     def get_embeddings(self, prompt: str, **kwargs) -> list[float]:
         data = {"model": self.model, "prompt": prompt, "stream": False}
@@ -86,6 +91,10 @@ class SimpleGenAI:
     def generate(self, model, prompt: str) -> str:
         server = OllamaClient(host=self.host, port=self.port, model=model)
         return server.generate(prompt)
+
+    def generate_with_files(self, model: str, prompt: str, files: list) -> str:
+        server = OllamaClient(host=self.host, port=self.port, model=model)
+        return server.generate_with_image(prompt, files)
 
     def generate_templated(
         self, model: str, prompt_template: str, prompt_args: dict, **kwargs

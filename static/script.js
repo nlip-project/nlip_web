@@ -1,4 +1,4 @@
-import { NLIP_Factory} from './save/script.js'
+import { NLIP_Factory} from './nlip.js'
 
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
@@ -40,8 +40,16 @@ form.addEventListener('submit', async (e) => {
   const nlipMessage = NLIP_Factory.createText(message);
 
   if (file.files.length > 0) {
-    const fileData = file.files[0];
-    nlipMessage.addImage(fileData, "png");
+    const fileObj = file.files[0];
+    const reader = await new Promise((resolve, reject) => {
+      const r = new FileReader();
+      r.onload = () => resolve(r);
+      r.onerror = reject;
+      r.readAsDataURL(fileObj);
+    });
+    // Extract base64 string from data URL
+    const base64 = reader.result.split(',')[1];
+    nlipMessage.addImage(base64, "png");
   }
 
   input.value = '';
