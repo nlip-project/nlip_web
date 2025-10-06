@@ -1,4 +1,3 @@
-
 function nlipCompareString(value1, value2, matchNone = false) {
   if (value1 !== null && value2 !== null) {
     return value1.toLowerCase() === value2.toLowerCase();
@@ -75,7 +74,7 @@ const ReservedTokens = {
   }
 };
 
-class NLIP_SubMessage {
+class NLIPSubMessage {
   /**
    * @param {string} format - One of the AllowedFormats
    * @param {string} subformat
@@ -105,7 +104,7 @@ class NLIP_SubMessage {
   }
 }
 
-class NLIP_Message {
+class NLIPMessage {
   constructor({ messagetype = null, format, subformat, content, label = null, submessages = [] }) {
     this.messagetype = messagetype;
     this.format = format;
@@ -128,7 +127,7 @@ class NLIP_Message {
 
   addConversationToken(conversationToken, forceChange = false, label = null) {
     const existingToken = this.extractConversationToken(label);
-    const submsg = new NLIP_SubMessage(AllowedFormats.token, ReservedTokens.conv, conversationToken, label);
+    const submsg = new NLIPSubMessage(AllowedFormats.token, ReservedTokens.conv, conversationToken, label);
 
     if (existingToken === null) {
       this.addSubmessage(submsg);
@@ -144,7 +143,7 @@ class NLIP_Message {
   addAuthenticationToken(token, label = null) {
     const existingToken = this.extractAuthenticationToken(label);
     if (existingToken === null) {
-      this.addSubmessage(new NLIP_SubMessage(AllowedFormats.token, ReservedTokens.auth, token, label));
+      this.addSubmessage(new NLIPSubMessage(AllowedFormats.token, ReservedTokens.auth, token, label));
     }
   }
 
@@ -215,7 +214,7 @@ class NLIP_Message {
   }
 
   addText(content, language = 'english', label = null) {
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.text, language, content, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.text, language, content, label));
   }
 
   addToken(token, tokenType, label = null) {
@@ -225,20 +224,20 @@ class NLIP_Message {
     if (ReservedTokens.isConv(tokenType)) {
       return this.addConversationToken(token, true, label);
     }
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.token, tokenType, token, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.token, tokenType, token, label));
   }
 
   addJson(jsonDict, label = null) {
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.structured, "JSON", jsonDict, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.structured, "JSON", jsonDict, label));
   }
 
   addStructuredText(content, contentType, label = null) {
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.structured, contentType, content, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.structured, contentType, content, label));
   }
 
   addBinary(content, binaryType, encoding, label = null) {
     const subformat = `${binaryType}/${encoding}`;
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.binary, subformat, content, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.binary, subformat, content, label));
   }
 
   addImage(content, encoding, label = null) {
@@ -254,51 +253,51 @@ class NLIP_Message {
   }
 
   addLocationText(location, label = null) {
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.location, "text", location, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.location, "text", location, label));
   }
 
   addLocationGps(location, label = null) {
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.location, "gps", location, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.location, "gps", location, label));
   }
 
   addErrorCode(errorCode, label = null) {
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.error, "code", errorCode, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.error, "code", errorCode, label));
   }
 
   addErrorText(errorDescr, label = null) {
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.error, "text", errorDescr, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.error, "text", errorDescr, label));
   }
 
   addGeneric(content, subformat, label = null) {
-    this.addSubmessage(new NLIP_SubMessage(AllowedFormats.generic, subformat, content, label));
+    this.addSubmessage(new NLIPSubMessage(AllowedFormats.generic, subformat, content, label));
   }
 }
 
 
-class NLIP_Factory {
+class NLIPFactory {
   static createText(content, language = 'english', messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.text, subformat: language, content, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.text, subformat: language, content, label });
   }
 
   static createControl(content, language = 'english', label = null) {
-    return new NLIP_Message({ messagetype: ReservedTokens.control, format: AllowedFormats.text, subformat: language, content, label });
+    return new NLIPMessage({ messagetype: ReservedTokens.control, format: AllowedFormats.text, subformat: language, content, label });
   }
 
   static createToken(token, tokenType, messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.token, subformat: tokenType, content: token, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.token, subformat: tokenType, content: token, label });
   }
 
   static createJson(jsonDict, messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.structured, subformat: "JSON", content: jsonDict, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.structured, subformat: "JSON", content: jsonDict, label });
   }
 
   static createStructured(content, contentType, messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.structured, subformat: contentType, content, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.structured, subformat: contentType, content, label });
   }
 
   static createBinary(content, binaryType, encoding, messagetype = null, label = null) {
     const subformat = `${binaryType}/${encoding}`;
-    return new NLIP_Message({ messagetype, format: AllowedFormats.binary, subformat, content, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.binary, subformat, content, label });
   }
 
   static createImage(content, encoding, messagetype = null, label = null) {
@@ -314,88 +313,83 @@ class NLIP_Factory {
   }
 
   static createLocationText(location, messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.location, subformat: "text", content: location, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.location, subformat: "text", content: location, label });
   }
 
   static createLocationGps(location, messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.location, subformat: "gps", content: location, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.location, subformat: "gps", content: location, label });
   }
 
   static createErrorCode(errorCode, messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.error, subformat: "code", content: errorCode, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.error, subformat: "code", content: errorCode, label });
   }
 
   static createErrorText(errorDescr, messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.error, subformat: "text", content: errorDescr, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.error, subformat: "text", content: errorDescr, label });
   }
 
   static createGeneric(content, subformat, messagetype = null, label = null) {
-    return new NLIP_Message({ messagetype, format: AllowedFormats.generic, subformat, content, label });
+    return new NLIPMessage({ messagetype, format: AllowedFormats.generic, subformat, content, label });
   }
 }
 
-
-class NLIP_HTTPX_Client {
-  constructor(baseUrl) {
+class NLIPClient {
+  constructor(baseUrl = '', options = {}) {
     this.baseUrl = baseUrl;
-    this.conversationId = null;
+    this.options = { timeout: 30000, ...options };
   }
 
-  static createFromUrl(baseUrl) {
-    return new NLIP_HTTPX_Client(baseUrl);
+  async sendMessage(text) {
+    const message = NLIPFactory.createText(text);
+
+    return this.send(message);
   }
 
-  static createFromHostPort(host, port) {
-    const baseUrl = `http://${host}:${port}/nlip`;
-    return new NLIP_HTTPX_Client(baseUrl);
+  async sendWithImage(text, imageFile) {
+    const base64 = await this.fileToBase64(imageFile);
+    const message = NLIPFactory.createText(text);
+    message.addImage(base64, this.getFileExtension(imageFile));
+    return this.send(message);
   }
 
-  baseProcessResponse(responseJson) {
-    const nlipMsg = new NLIP_Message(responseJson);
-    const correlator = nlipMsg.extractConversationToken();
-    if (correlator !== null) {
-      this.conversationId = correlator;
-    }
-    return nlipMsg;
+  async uploadFile(file) {
+    const formData = new FormData();
+    formData.append('contents', file);
+    
+    const response = await fetch(`${this.baseUrl}/nlip/upload/`, {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (!response.ok) throw new Error('Upload failed');
+    return response.json();
   }
 
-  checkForConversation(msg) {
-    if (this.conversationId !== null) {
-      const correlator = msg.extractConversationToken();
-      if (correlator === null) {
-        msg.addConversationToken(this.conversationId);
-      }
-    }
-    return msg;
+  async send(nlipMessage) {
+    const response = await fetch(`${this.baseUrl}/nlip/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: nlipMessage.toJSON(),
+      signal: AbortSignal.timeout(this.options.timeout)
+    });
+
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
   }
 
-async postJson(url, data) {
-  const response = await fetch(url, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
-    redirect: "follow"
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`HTTP error ${response.status}: ${errorText}`);
+  // Utility methods
+  async fileToBase64(file) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result.split(',')[1]);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   }
 
-  return response.json();
-}
-
-async asyncSend(msg) {
-  msg = this.checkForConversation(msg);
-  const payload = msg.toDict();
-  const responseJson = await postJson(this.baseUrl, payload);
-  return this.baseProcessResponse(responseJson);
-}
-
-  // Optional: mimic sync behavior with async under the hood
-  send(msg) {
-    return this.asyncSend(msg);
+  getFileExtension(file) {
+    return file.name.split('.').pop() || 'bin';
   }
 }
 
-export { NLIP_Message, NLIP_Factory, NLIP_HTTPX_Client, AllowedFormats, ReservedTokens, nlipCompareString, CaseInsensitiveEnum };
+export { NLIPMessage, NLIPFactory, NLIPClient, AllowedFormats, ReservedTokens, nlipCompareString, CaseInsensitiveEnum };

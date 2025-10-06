@@ -1,4 +1,6 @@
-import { NLIP_Factory} from './nlip.js'
+import { NLIPClient } from './nlip.js'
+
+const client = new NLIPClient();
 
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
@@ -37,37 +39,19 @@ form.addEventListener('submit', async (e) => {
   chatBox.appendChild(pair);
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  const nlipMessage = NLIP_Factory.createText(message);
-
-  if (file.files.length > 0) {
-    const fileObj = file.files[0];
-    const reader = await new Promise((resolve, reject) => {
-      const r = new FileReader();
-      r.onload = () => resolve(r);
-      r.onerror = reject;
-      r.readAsDataURL(fileObj);
-    });
-    // Extract base64 string from data URL
-    const base64 = reader.result.split(',')[1];
-    nlipMessage.addImage(base64, "png");
-  }
-
   input.value = '';
 
   try {
-    const response = await fetch('/nlip/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: nlipMessage.toJSON()
-    });
-
-    const data = await response.json();
+    let data = null;
+    if (file.files.length > 0) {
+      data = await client.sendWithImage(message, file.files[0]);
+    } else {
+      data = await client.sendMessage(message);
+    }
     botBox.textContent =  data.content || 'No response';
   } catch (error) {
-        botBox.textContent = 'Error connecting to chat engine.';
+    botBox.textContent = 'Error connecting to chat engine.';
     console.error(error);
-  }
+  }  
 });
 
