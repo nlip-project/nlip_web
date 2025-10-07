@@ -1,6 +1,22 @@
+import { NLIPClient } from './nlip.js'
+
+const client = new NLIPClient();
+
 const form = document.getElementById('chat-form');
 const input = document.getElementById('user-input');
+const file = document.getElementById('file-input');
 const chatBox = document.getElementById('chat-box');
+
+file.addEventListener('change', () => {
+  const fileList = document.getElementById('file-list');
+  fileList.innerHTML = '';
+  Array.from(file.files).forEach(f => {
+    const li = document.createElement('li');
+    li.textContent = f.name;
+    fileList.appendChild(li);
+  });
+});
+
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -23,30 +39,19 @@ form.addEventListener('submit', async (e) => {
   chatBox.appendChild(pair);
   chatBox.scrollTop = chatBox.scrollHeight;
 
-  const nlipMessage = { "messagetype": "text", 
-    "format": "text",
-    "subformat": "English",
-    "content": message,
-   }
-
-
-
   input.value = '';
 
   try {
-    const response = await fetch('/nlip/', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(nlipMessage)
-    });
-
-    const data = await response.json();
+    let data = null;
+    if (file.files.length > 0) {
+      data = await client.sendWithImage(message, file.files[0]);
+    } else {
+      data = await client.sendMessage(message);
+    }
     botBox.textContent =  data.content || 'No response';
   } catch (error) {
-        botBox.textContent = 'Error connecting to chat engine.';
+    botBox.textContent = 'Error connecting to chat engine.';
     console.error(error);
-  }
+  }  
 });
 

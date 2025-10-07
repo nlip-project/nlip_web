@@ -13,7 +13,7 @@ logger.setLevel(logging.INFO)
 
 class ChatApplication(server.SafeApplication):
     def startup(self):
-        self.model = os.environ.get("CHAT_MODEL", "granite3-moe")
+        self.model = os.environ.get("CHAT_MODEL", "llava")
         self.host = os.environ.get("CHAT_HOST", "localhost")
         self.port = os.environ.get("CHAT_PORT", 11434)
 
@@ -38,7 +38,19 @@ class ChatSession(server.NLIP_Session):
         self, msg: nlip.NLIP_Message
     ) -> nlip.NLIP_Message:
         text = msg.extract_text()
-        response = self.chat_server.generate(self.model, text)
+
+        files = []
+        binary_contents = msg.extract_field_list("binary")
+        for base64_content in binary_contents:
+            files.append(base64_content)
+        
+        # Generate response with optional files
+        if files:
+            response = self.chat_server.generate_with_files(self.model, text, files)
+            logger.info("Processing message with base64 image files")
+        else:
+            response = self.chat_server.generate(self.model, text)
+            
         return nlip.NLIP_Factory.create_text(response)
 
     def stop(self):
