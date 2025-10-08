@@ -1,0 +1,2 @@
+/* shim: forward old link to the new stylesheet */
+@import url("/static/styles.css?v=pro3");
