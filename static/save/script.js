@@ -21,7 +21,7 @@ const AllowedFormats = {
 };
 
 // Usage example:
-const format = CaseInsensitiveEnum.fromValue(AllowedFormats, "ToKeN"); // returns "token"
+// const format = CaseInsensitiveEnum.fromValue(AllowedFormats, "ToKeN"); // returns "token"
 
 class CaseInsensitiveEnum {
   constructor(enumObj) {
@@ -397,3 +397,5 @@ async asyncSend(msg) {
     return this.asyncSend(msg);
   }
 }
+
+export { NLIP_Message, NLIP_Factory, NLIP_HTTPX_Client, AllowedFormats, ReservedTokens, nlipCompareString, CaseInsensitiveEnum };
