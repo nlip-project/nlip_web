@@ -1,3 +1,5 @@
+import { NLIPClient } from "./nlip.js";
+
 // ---- Helpers ---------------------------------------------------------------
 const $ = sel => document.querySelector(sel);
 const $$ = sel => Array.from(document.querySelectorAll(sel));
@@ -6,6 +8,8 @@ const el = (tag, cls) => { const n=document.createElement(tag); if (cls) n.class
 const CHAT_KEY = 'nlip_chat_history_v1';
 const THEME_KEY = 'nlip_theme';
 const NAME_KEY  = 'nlip_display_name';
+
+const client = new NLIPClient();
 
 // ---- State -----------------------------------------------------------------
 let chats = loadChats();      // {id, title, messages:[{role, text, attachments?}]}
@@ -122,7 +126,10 @@ $('#chips').addEventListener('click', e=>{
 
 // ---- Attachments -----------------------------------------------------------
 let pendingAttachments = [];
+let rawFiles = null;
 $('#fileInput').addEventListener('change', async (e)=>{
+  rawFiles = Array.from(e.target.files||[]);
+  console.log(rawFiles)
   pendingAttachments = [];
   const files = Array.from(e.target.files||[]);
   for (const f of files){
@@ -181,24 +188,16 @@ form.addEventListener('submit', async (e)=>{
   pendingAttachments = [];
   $('#fileInput').value = '';
 
-  // payload to your existing NLIP echo endpoint (text only so we keep compatibility)
-  const nlipMessage = {
-    messagetype: "text",
-    format: "text",
-    subformat: "English",
-    content: attachments?.length ? `${text}\n\n[User attached: ${attachments.map(a=>a.name).join(', ')}]` : text
-  };
-
   input.value=''; input.dispatchEvent(new Event('input'));
   typing(true);
 
   try{
-    const res = await fetch('/nlip/', {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json' },
-      body: JSON.stringify(nlipMessage)
-    });
-    const data = await res.json();
+    let data = null;
+    if (attachments.length > 0) {
+      data = await client.sendWithImage(text, rawFiles[0]);
+    } else {
+      data = await client.sendMessage(text);
+    }
     typing(false);
     const reply = (data && (data.content || data.message || data.reply)) || 'No response';
     renderMessage('assistant', reply);
