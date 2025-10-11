@@ -15,4 +15,6 @@ requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-start = "scripts:start_server"
+chat = "scripts:start_chat"
+image = "scripts:start_image"
+

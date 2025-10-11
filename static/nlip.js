@@ -1,11 +1,11 @@
 function nlipCompareString(value1, value2, matchNone = false) {
-  if (value1 !== null && value2 !== null) {
+  if (value1 != null && value2 != null) {
     return value1.toLowerCase() === value2.toLowerCase();
   }
   if (matchNone) {
     return true;
   } else {
-    return value1 === null && value2 === null;
+    return value1 == null && value2 == null;
   }
 }
 
@@ -103,6 +103,7 @@ class NLIPSubMessage {
     return null;
   }
 }
+
 
 class NLIPMessage {
   constructor({ messagetype = null, format, subformat, content, label = null, submessages = [] }) {
@@ -331,18 +332,41 @@ class NLIPFactory {
   static createGeneric(content, subformat, messagetype = null, label = null) {
     return new NLIPMessage({ messagetype, format: AllowedFormats.generic, subformat, content, label });
   }
+
+  static createSubMessageFromJSON(jsonObject) {
+    return new NLIPSubMessage(jsonObject.format, jsonObject.subformat, jsonObject.content, jsonObject.label)
+  }
+
+  static createMessageFromJSON(jsonObject) {
+    let submessages = null
+    if (jsonObject.submessages != null) {
+      submessages = jsonObject.submessages.map(sm => new NLIPSubMessage(sm.format, sm.subformat, sm.content, sm.label))
+    } 
+
+    return new NLIPMessage({messagetype: jsonObject.messagetype, 
+      format: jsonObject.format, subformat: jsonObject.subformat, content: jsonObject.content,
+      label: jsonObject.label, submessages: submessages})
+  }
 }
 
 class NLIPClient {
   constructor(baseUrl = '', options = {}) {
     this.baseUrl = baseUrl;
     this.options = { timeout: 30000, ...options };
+    this.correlator = null
   }
 
   async sendMessage(text) {
     const message = NLIPFactory.createText(text);
-
-    return this.send(message);
+    if (this.correlator != null) {
+      message.addConversationToken(this.correlator)
+    }
+    const response = await this.send(message);
+    const nlipMessage = NLIPFactory.createMessageFromJSON(response)
+    this.correlator = nlipMessage.extractToken(ReservedTokens.conv)
+    
+    const extractedText = nlipMessage.extractText()
+    return extractedText
   }
 
   async sendWithImage(text, imageFile) {

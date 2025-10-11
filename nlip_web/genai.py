@@ -56,7 +56,7 @@ class OllamaClient(GenAI):
 
     def generate(self, prompt: str, **kwargs) -> str:
         data = {"model": self.model, "prompt": prompt, "stream": False}
-        results = self._base_httpx_call("generate", data)
+        results = self._base_httpx_call("generate", data, **kwargs)
         return results["response"]
     
     def generate_with_image(self, prompt: str, images: list, **kwargs) -> str:
@@ -125,3 +125,15 @@ class StatefulGenAI:
         self.history.append(this_message)
         self.history.append(response)
         return response.get("content")
+    
+    def chat_multimodal(self, message:str, **kwargs):
+        this_message = {"role": "user", "content": message}
+        for key in kwargs.keys(): 
+            this_message[key] = kwargs.get(key)
+        response = self.server.chat(this_message, history=self.history)
+        self.history.append(this_message)
+        self.history.append(response)
+        return response.get("content")
+        
+
+    

@@ -3,11 +3,16 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NLIP Chat Client</title>
+  <title>NLIP Image Description Client</title>
   <link rel="stylesheet" href="/static/styles.css" />
 </head>
 <body>
-  <div class="container">
+  <div class="body-container">
+    <div class="description-container ">
+      <h1>Image Description Page</h1>
+      <p>This is the main page for a image/text based interaction based on NLIP. </p>
+      <p>This interaction allows sending mixed text/images and expects text response.</p>
+    </div>
     <div class="chat-container">
       <div id="chat-box" class="chat-box"></div>
       <form id="chat-form">
@@ -19,6 +24,6 @@
     </div>
     <ul id="file-list" class="file-list"></ul>
   </div>
-  <script type="module" src="/static/script.js"></script>
+  <script type="module" src="/static/image_script.js"></script>
 </body>
 </html>
