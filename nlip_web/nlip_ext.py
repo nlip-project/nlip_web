@@ -10,7 +10,7 @@ import time
 from nlip_server import server
 from nlip_sdk import errors as err 
 from nlip_sdk import nlip
-import env
+from nlip_web import env
 from dataclasses import dataclass
 import uvicorn
 import logging
@@ -103,7 +103,6 @@ class SafeStatefulApplication(server.SafeApplication):
 
     def check_existing(self, request:nlip.NLIP_Message) -> any:
         if request is not None:
-            print(f'Checking existing session for {request.to_json()}')
             correlator =  request.extract_conversation_token()
             mydata = self.session_dict.get(correlator, None) 
             if mydata is not None:
@@ -127,25 +126,31 @@ class SafeStatefulApplication(server.SafeApplication):
             
 
 class WebApplication(SafeStatefulApplication):
-    def __init__(self, main_page="index.html", static_dir="static"):
+    def __init__(self, indexFile="index.html", pathname = "/static", static_dir="static", favicon_path="/static/NLIPlogo.png"):
         super().__init__()
+        self.static_dir = static_dir
+        self.favicon_path = favicon_path
+        self.indexFile = indexFile
+        self.pathname = pathname
 
-def setup_webserver(thisapp:server.NLIP_Application, indexFile="index.html", pathname = "/static", staticDir:str="static", name="static", favicon_path="/static/NLIPlogo.png") -> FastAPI:
-    app = server.setup_server(thisapp)
-    app.mount(pathname, StaticFiles(directory=staticDir), name=name)
-  
-    @app.get("/", response_class=HTMLResponse)
-    async def read_root():
-        with open(indexFile, "r") as f:
-            html_content = f.read()
-        return HTMLResponse(content=html_content)
 
-    @app.get("/favicon.ico", include_in_schema=False)
-    async def get_favicon():
-        return FileResponse(favicon_path)
+    def setup_webserver(self, thisapp:server.NLIP_Application, port, host="localhost") -> FastAPI:
+            app = server.setup_server(thisapp)
+            app.mount(self.pathname, StaticFiles(directory=self.static_dir))
+        
+            @app.get("/", response_class=HTMLResponse)
+            async def read_root():
+                with open(self.indexFile, "r") as f:
+                    html_content = f.read()
+                return HTMLResponse(content=html_content)
 
-    
-    return app
+            @app.get("/favicon.ico", include_in_schema=False)
+            async def get_favicon():
+                return FileResponse(self.favicon_path)
 
-def start_server(app:FastAPI, port, host="localhost"):
-    uvicorn.run(app, host="localhost", port=port)
+            self.fastapi_app = app
+            self.start_server(port,host=host)
+            return app
+
+    def start_server(self, port, host="localhost"):
+        uvicorn.run(self.fastapi_app, port=port, host=host)

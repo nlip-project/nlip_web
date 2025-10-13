@@ -40,8 +40,9 @@ class ChatSession(nlip_ext.StatefulSession):
         return nlip.NLIP_Factory.create_text(response)
 
 
-chatapp = ChatApplication()
-app = nlip_ext.setup_webserver(chatapp,indexFile="static/text_chat.html")
+
 
 if __name__ == "__main__":
-    nlip_ext.start_server(app, port=chatapp.local_port)
+    chatapp = ChatApplication()
+    webapp = nlip_ext.WebApplication(indexFile="static/text_chat.html")
+    app = webapp.setup_webserver(chatapp, port=chatapp.local_port)

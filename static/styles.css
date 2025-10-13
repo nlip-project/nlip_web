@@ -6,6 +6,10 @@ body {
   height: 100vh;
 }
 
+p {
+  text-align: left;
+}
+
 .body-container {
   display: flex;
   max-width: 100vw;
