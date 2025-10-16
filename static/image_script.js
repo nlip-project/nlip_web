@@ -45,10 +45,12 @@ form.addEventListener('submit', async (e) => {
     let data = null;
     if (file.files.length > 0) {
       data = await client.sendWithImage(message, file.files[0]);
+      botBox.textContent =  data.content || 'No response';
     } else {
       data = await client.sendMessage(message);
+      botBox.textContent =  data || 'No response';
     }
-    botBox.textContent =  data.content || 'No response';
+    
   } catch (error) {
     botBox.textContent = 'Error connecting to chat engine.';
     console.error(error);

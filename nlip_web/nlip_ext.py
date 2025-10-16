@@ -14,6 +14,7 @@ from nlip_web import env
 from dataclasses import dataclass
 import uvicorn
 import logging
+import inspect
 
 @dataclass 
 class SessionState: 
@@ -27,7 +28,7 @@ be reused across different calls from the client.
 '''
 class StatefulSession(server.NLIP_Session):
     
-    def correlated_execute(self, msg: nlip.NLIP_Message) -> nlip.NLIP_Message:
+    async def correlated_execute(self, msg: nlip.NLIP_Message) -> nlip.NLIP_Message:
         # Check if the other side has sent a correlator 
         
         other_correlator =  msg.extract_conversation_token()
@@ -39,7 +40,9 @@ class StatefulSession(server.NLIP_Session):
             self.set_session_data(session_data)
             self.correlator = other_correlator
 
-        rsp = self.execute(msg)
+        rsp_or_coro = self.execute(msg)
+        rsp = await rsp_or_coro if inspect.isawaitable(rsp_or_coro) else rsp_or_coro
+        
         # On the response, we need to add the correlator 
         # There are three cases: 
         #  The other side has sent a correlator -- which is the one to send back
