@@ -9,7 +9,7 @@ export default defineConfig({
     proxy: {
       // Proxy API calls to the FastAPI backend during development
       '/nlip': {
-        target: 'http://localhost:8010',
+        target: 'http://localhost:8030',
         changeOrigin: true,
       },
     },
