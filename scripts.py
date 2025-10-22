@@ -35,3 +35,14 @@ def start_image():
     my_env = get_env(local_port=8020,chat_model="llava")
     command = f"poetry run python nlip_web/image_chat.py"
     run_command(command, my_env)
+
+def start_vite():
+    my_env = get_env(local_port=8030,chat_model="llava")
+    try:
+        # Build in client directory
+        subprocess.run(["npm", "run", "build"], env=my_env, check=True, cwd="client")
+        # Run Python script from parent directory
+        subprocess.run(["poetry", "run", "python", "nlip_web/vite_chat.py"], 
+                      env=my_env, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing command: {e}")
