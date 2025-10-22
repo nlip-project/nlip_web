@@ -5,4 +5,13 @@ import tailwindcss from '@tailwindcss/vite'
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tailwindcss()],
+  server: {
+    proxy: {
+      // Proxy API calls to the FastAPI backend during development
+      '/nlip': {
+        target: 'http://localhost:8010',
+        changeOrigin: true,
+      },
+    },
+  },
 })

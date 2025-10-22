@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { NLIPClient } from '../utils/nlip';
 
 export default function Text() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const nlipClient = new NLIPClient();
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -17,24 +19,8 @@ export default function Text() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('http://localhost:11434/api/chat', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          model: 'granite3-moe',
-          messages: [{ role: 'user', content: userMessage }],
-          stream: false
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-
-      const data = await response.json();
-      const botMessage = data.message?.content || 'No response';
+      const data = await nlipClient.sendMessage(userMessage);
+      const botMessage = data || 'No response';
       
       // Add bot response to chat
       setMessages(prev => [...prev, { role: 'assistant', content: botMessage }]);
@@ -53,7 +39,7 @@ export default function Text() {
     <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center">
       <div className="w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[85vh]">
         {/* Header */}
-        <div className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white px-6 py-4">
+        <div className="bg-linear-to-r from-cyan-500 to-blue-500 text-white px-6 py-4">
           <h2 className="text-2xl font-bold">NLIP Client</h2>
         </div>
 
@@ -71,7 +57,7 @@ export default function Text() {
                   ? 'bg-cyan-500 text-white rounded-tr-sm' 
                   : 'bg-white text-gray-800 shadow-md rounded-tl-sm border border-gray-200'
               }`}>
-                <p className="whitespace-pre-line break-words">{msg.content}</p>
+                <p className="whitespace-pre-line wrap-break-words">{msg.content}</p>
               </div>
             </div>
           ))}
