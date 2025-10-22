@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Structured Chat • NLIP</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    /* Additional styles for structured content */
+    .structured-response {
+      background: var(--panel);
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      margin: 8px 0;
+      overflow-x: auto;
+    }
+    
+    .product-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 16px 0;
+    }
+    
+    .product-table th,
+    .product-table td {
+      padding: 12px 16px;
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .product-table th {
+      background: var(--muted);
+      font-weight: 600;
+      color: var(--text);
+    }
+    
+    .product-table tr:hover {
+      background: var(--muted);
+    }
+    
+    .product-card {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      margin: 12px 0;
+      background: var(--panel);
+      transition: border-color 0.2s ease;
+    }
+    
+    .product-card:hover {
+      border-color: var(--brand);
+    }
+    
+    .product-image {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 8px;
+      background: var(--muted);
+    }
+    
+    .product-info {
+      flex: 1;
+    }
+    
+    .product-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin: 0 0 8px;
+      color: var(--text);
+    }
+    
+    .product-description {
+      color: var(--sub);
+      margin: 0 0 8px;
+      line-height: 1.4;
+    }
+    
+    .product-price {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--brand);
+      margin: 0;
+    }
+    
+    .product-link {
+      color: var(--brand);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    
+    .product-link:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="side-top">
+        <button class="new-chat" id="newChatBtn"><span class="plus">+</span> New chat</button>
+        <nav class="history" id="historyList" aria-label="Chat history"></nav>
+      </div>
+      <div class="side-bottom">
+        <button class="side-btn" id="settingsBtn" title="Settings"><span class="icon">⚙️</span> Settings</button>
+        <button class="side-btn" id="themeToggle" title="Toggle theme"><span class="icon">🌙</span> Theme</button>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <div class="main">
+      <header class="topbar">
+        <div class="brand">
+          <img class="logo-img" src="/static/NLIPlogo.png" alt="NLIP" />
+          <div>
+            <h1>Structured Chat</h1>
+            <p class="sub">Get structured data and product information</p>
+          </div>
+        </div>
+      </header>
+
+      <main class="content">
+        <!-- Hero + chips -->
+        <section class="hero">
+          <div class="burst">⁂</div>
+          <h2>Product Search & Data, <span id="userName">User</span></h2>
+          <p class="muted">Ask about products, search for items, or request structured data in tables and cards.</p>
+
+          <div class="chips" id="chips">
+            <button class="chip">Find laptop computers</button>
+            <button class="chip">Show me smartphones</button>
+            <button class="chip">Search for books</button>
+            <button class="chip">Product comparison table</button>
+          </div>
+        </section>
+
+        <!-- Chat card -->
+        <section class="card chat-card" aria-label="Chat">
+          <div id="chat-box" class="feed" aria-live="polite"></div>
+
+          <form id="chat-form" class="composer" autocomplete="off">
+            <div class="left-tools">
+              <button class="tool" type="button" id="clearBtn" title="Clear current chat">🧹</button>
+            </div>
+
+            <textarea id="user-input" rows="1" placeholder="Ask about products or request structured data…"></textarea>
+
+            <div class="right-tools">
+              <button id="send" class="send" type="submit" disabled>
+                <span>Send</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 11L21 3l-8 18-2-7-8-3z" fill="currentColor"/>
+                </svg>
+              </button>
+            </div>
+          </form>
+
+          <p class="hint">Enter to send • Shift+Enter for new line</p>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Settings modal -->
+  <dialog id="settingsModal" class="modal">
+    <form method="dialog" class="modal-body">
+      <h3>Settings</h3>
+
+      <label class="row">
+        <span>Display name</span>
+        <input id="nameInput" type="text" placeholder="Your name">
+      </label>
+
+      <div class="row">
+        <span>Theme</span>
+        <div class="seg">
+          <button type="button" data-theme="light">Light</button>
+          <button type="button" data-theme="dark">Dark</button>
+          <button type="button" data-theme="auto">Auto</button>
+        </div>
+      </div>
+
+      <menu>
+        <button value="cancel" class="btn ghost">Close</button>
+      </menu>
+    </form>
+  </dialog>
+
+  <script src="/static/page2_structured_script.js"></script>
+</body>
+</html>

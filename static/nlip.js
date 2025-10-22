@@ -352,7 +352,7 @@ class NLIPFactory {
 class NLIPClient {
   constructor(baseUrl = '', options = {}) {
     this.baseUrl = baseUrl;
-    this.options = { timeout: 30000, ...options };
+    this.options = { timeout: 300000, ...options };  // Increased to 5 minutes for large files
     this.correlator = null
   }
 
