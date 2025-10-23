@@ -40,7 +40,7 @@ def start_vite():
     my_env = get_env(local_port=8030,chat_model="llava")
     try:
         # Build in client directory
-        subprocess.run(["npm", "run", "build"], env=my_env, check=True, cwd="client")
+        subprocess.run(["npm", "run", "build:text"], env=my_env, check=True, cwd="client")
         # Run Python script from parent directory
         subprocess.run(["poetry", "run", "python", "nlip_web/vite_chat.py"], 
                       env=my_env, check=True)

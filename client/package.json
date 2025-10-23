@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:text": "VITE_APP_MODE=text vite build",
+    "build:products": "VITE_APP_MODE=products vite build",
+    "build:images": "VITE_APP_MODE=images vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
