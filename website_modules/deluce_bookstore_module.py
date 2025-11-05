@@ -13,6 +13,10 @@ WEB_ADDRESS = 'https://bookstore.uwo.ca/'
 SEARCH_ARG = 'search/products?search='
 PAGE_NUM = "&page=" # no page number argument for fist page, second page starts at &page=1
 SORT_ARG = "&sort=" # add search filter like: &sort=search_api_relevance%20DESC
+## options = [relevance_desc, newest to oldest, oldest to newest, price increasing, price decreasing]
+SORT_ARG_OPTIONS = ['search_api_relevance%20DESC', 'created+DESC', 'created+ASC', 'search_api_aggregation_2+ASC', 'search_api_aggregation_2+DESC']
+CATEGORY = '&category='
+CATEGORY_OPTIONS = ['All'] # All is default, category id can be specified 
 HTTP_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
     'Accept-Language': 'en-US,en;q=0.9',
@@ -99,21 +103,46 @@ def parse_site_content(html_content) -> list:
         return []
 
     product_information = []
-
     products = soup.find_all("div", class_="views-row")
 
     for prod in products:
         temp_prod = {}
-        # extract item name
+        # extract it-em name
         temp_prod["item_name"] = prod.find('a').text
-
 
         # commerce-product-field is where price information is stored
         price_field = prod.find(class_="commerce-product-field")
         temp_prod["price"] = price_field.find("div", class_="field-item").text
+        ## can potentially contain <del>price<del> If item is on sale.
+
+        # check if item has sizes:
+        sizes_radio_group = prod.find(class_='attribute-widgets')
+        temp_prod['sizes'] = ['N/A']
+        
+        if sizes_radio_group != None:
+            temp_prod['sizes'] = []
+            radio_buttons = prod.find_all(class_="control-label")
+            for opt in radio_buttons:
+                if opt.text == 'Size:': ## skip control values with non-size specific information
+                    continue
+                temp_prod['sizes'].append(opt.text)
+
+        ## TODO: fix availability for items with multiple sizes
+        temp_prod["availability"] = availability
+
+        availability = prod.find(class_="add-to-cart").text
+        if availability == "Add to cart":
+            availability = "in stock"
+
+        temp_prod["product_photo"] = prod.find('img')['src']
 
         # add link to product page using link to item id stored in anchor tag
         temp_prod["link"] = (WEB_ADDRESS[:-1] + prod.find('a')['href'])
+
+        ## Further product information available on the item page
+        # Stock count
+        # on order count
+        # SKU -> differs from product id. is different for each size listing
 
         # push product information to list
         product_information.append(temp_prod)
@@ -130,8 +159,10 @@ def get_config() -> dict:
         "search_arg": SEARCH_ARG,
         "page_num": PAGE_NUM,
         "sort_arg": SORT_ARG,
-        "sort_arg_options": [], ## TODO: populate the valid search filters
+        "sort_arg_options": SORT_ARG_OPTIONS,
         "http_headers": HTTP_HEADERS,
+        "filter_category": CATEGORY,
+        "filter_category_options": CATEGORY_OPTIONS
     }
 
 # main function for use if run as script
