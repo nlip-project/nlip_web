@@ -139,6 +139,13 @@ class WebApplication(SafeStatefulApplication):
 
     def setup_webserver(self, thisapp:server.NLIP_Application, port, host="localhost") -> FastAPI:
             app = server.setup_server(thisapp)
+            
+            # Mount the assets folder if it exists (for Vite builds)
+            assets_dir = os.path.join(self.static_dir, "assets")
+            if os.path.exists(assets_dir) and os.path.isdir(assets_dir):
+                app.mount("/assets", StaticFiles(directory=assets_dir), name="assets")
+            
+            # Mount the main static directory
             app.mount(self.pathname, StaticFiles(directory=self.static_dir))
         
             @app.get("/", response_class=HTMLResponse)
