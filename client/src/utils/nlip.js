@@ -198,6 +198,25 @@ class NLIPMessage {
     return this.extractToken(ReservedTokens.auth, label);
   }
 
+  extractJson(label = null) {
+    const jsonContent = this.extractField(AllowedFormats.structured, 'JSON', label);
+    if (jsonContent !== null) {
+      return jsonContent;
+    }
+    
+    // Check submessages
+    if (Array.isArray(this.submessages)) {
+      for (const submsg of this.submessages) {
+        const content = submsg.extractField(AllowedFormats.structured, 'JSON', label);
+        if (content !== null) {
+          return content;
+        }
+      }
+    }
+    
+    return null;
+  }
+
   toJSON() {
     const obj = {
       messagetype: this.messagetype,
@@ -356,7 +375,7 @@ class NLIPClient {
     this.correlator = null
   }
 
-  async sendMessage(text) {
+  async sendMessage(text, jsonResponse = false) {
     const message = NLIPFactory.createText(text);
     if (this.correlator != null) {
       message.addConversationToken(this.correlator)
@@ -365,6 +384,10 @@ class NLIPClient {
     const nlipMessage = NLIPFactory.createMessageFromJSON(response)
     this.correlator = nlipMessage.extractToken(ReservedTokens.conv)
     
+    if (jsonResponse) {
+      const jsonData = nlipMessage.extractJson();
+      return jsonData;
+    }
     const extractedText = nlipMessage.extractText()
     return extractedText
   }
