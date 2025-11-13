@@ -4,6 +4,8 @@ from nlip_web.env import read_digits, read_string
 from nlip_server import server
 from nlip_sdk import nlip
 
+from website_modules import deluce_bookstore_module as dbm
+
 
 class ChatApplication(nlip_ext.SafeStatefulApplication):
     def __init__(self):
@@ -21,8 +23,6 @@ class ChatApplication(nlip_ext.SafeStatefulApplication):
         self.store_session_data(session.get_correlator(), genAI)
         return session
 
-    
-
 
 class ChatSession(nlip_ext.StatefulSession):
 
@@ -38,6 +38,9 @@ class ChatSession(nlip_ext.StatefulSession):
         chat_server = self.nlip_app.retrieve_session_data(self.get_correlator())
         if chat_server is None: 
             return nlip.NLIP_Factory.create_text("Error: Can't find my chat server")
+
+        #results = dbm.search_product(text)
+        #print(results)
 
         # print(f'Received text {text[0:10]}...')
         response = chat_server.chat_multimodal(text, images = images)

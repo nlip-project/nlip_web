@@ -128,9 +128,9 @@ def parse_site_content(html_content) -> list:
                 temp_prod['sizes'].append(opt.text)
 
         ## TODO: fix availability for items with multiple sizes
+        availability = prod.find(class_="add-to-cart").text
         temp_prod["availability"] = availability
 
-        availability = prod.find(class_="add-to-cart").text
         if availability == "Add to cart":
             availability = "in stock"
 
