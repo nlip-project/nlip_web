@@ -26,13 +26,18 @@ Module files are commonly used in a similar fashion to a library, although some 
 
 ```json
 {
-  "item_name": "string",
-  "price": "string",
-  "sizes": [
-    "string"
-  ],
-  "availability": "string",
-  "product_photo": "string",
-  "link": "string"
+  <store_name>: [
+    {
+      "item_name": "string",
+      "price": "string",
+      "sizes": [
+        "string"
+      ],
+      "availability": "string",
+      "product_photo": "string",
+      "link": "string"
+    }
+  ]
 }
+
 ```

@@ -6,9 +6,12 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
+import sys
 import time
+import json
 
 ## CONSTANT VARIABLES
+STORE_NAME = "deulce_bookstore"
 WEB_ADDRESS = 'https://bookstore.uwo.ca/'
 SEARCH_ARG = 'search/products?search='
 PAGE_NUM = "&page=" # no page number argument for fist page, second page starts at &page=1
@@ -32,7 +35,8 @@ def search_product(query_term) -> list:
     options.add_argument(f"user-agent={HTTP_HEADERS['User-Agent']}")
     driver = webdriver.Chrome(options=options)
 
-    product_list = []
+    product_list = {}
+    product_list[STORE_NAME] = []
 
     try:
         driver.get(WEB_ADDRESS + SEARCH_ARG + query_term)
@@ -44,7 +48,7 @@ def search_product(query_term) -> list:
             driver.quit()
             return
 
-        product_list.append(parsed_content)
+        product_list[STORE_NAME] = product_list[STORE_NAME] + parsed_content
 
         # first page non-empty, query remaining pages of content.
         end_of_content = False
@@ -60,7 +64,7 @@ def search_product(query_term) -> list:
                 break
             # increment page counter
             current_page += 1
-            product_list.append(parsed_content)
+            product_list[STORE_NAME] = product_list[STORE_NAME] + parsed_content
     finally:
         driver.quit()    
 
@@ -102,13 +106,17 @@ def parse_site_content(html_content) -> list:
     if len(end_of_results) != 0:
         return []
 
-    product_information = []
     products = soup.find_all("div", class_="views-row")
+    
+    # create the dictionary to return list of product information
+    product_information = []
 
     for prod in products:
         temp_prod = {}
         # extract it-em name
-        temp_prod["item_name"] = prod.find('a').text
+        temp_prod["name"] = prod.find('a').text
+
+        temp_prod["description"] = 'N/A'
 
         # commerce-product-field is where price information is stored
         price_field = prod.find(class_="commerce-product-field")
@@ -167,9 +175,15 @@ def get_config() -> dict:
 
 # main function for use if run as script
 if __name__ == "__main__":
-    print("Input serch term: ")
-    search_term = input()
+    search_term = ""
+    if len(sys.argv) > 1:
+        search_term = sys.argv[1]
+    else:
+        print("Input serch term: ")
+        search_term = input()
     
     return_vals = search_product(search_term)
-    print(return_vals)
+    
+    json = json.dumps(return_vals)
+    print(json)
     

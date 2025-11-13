@@ -401,6 +401,12 @@ class NLIPClient {
     return response.json();
   }
 
+  async fetchTestData() {
+    const response = await fetch(`${this.baseUrl}/nlip/`);
+    const json = await response.json();
+    console.log(json);
+  }
+
   // Utility methods
   async fileToBase64(file) {
     return new Promise((resolve, reject) => {

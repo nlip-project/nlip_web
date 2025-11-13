@@ -1,6 +1,14 @@
 from nlip_web.genai import StatefulGenAI
 from nlip_web  import nlip_ext as nlip_ext 
 from nlip_web.env import read_digits, read_string
+#from nlip_server import server
+#from nlip_sdk import nlip
+
+# resolve python module paths
+import sys
+sys.path.insert(0, "../../nlip_server/nlip_server/")
+sys.path.insert(0, "../../nlip_sdk/nlip_sdk/")
+
 from nlip_server import server
 from nlip_sdk import nlip
 
@@ -39,13 +47,16 @@ class ChatSession(nlip_ext.StatefulSession):
         if chat_server is None: 
             return nlip.NLIP_Factory.create_text("Error: Can't find my chat server")
 
-        #results = dbm.search_product(text)
-        #print(results)
+        # seems to function
+        results = dbm.search_product(text)
+        print(results)
+        results = nlip.NLIP_Factory.create_json(results) 
+        return results
 
         # print(f'Received text {text[0:10]}...')
-        response = chat_server.chat_multimodal(text, images = images)
+        # response = chat_server.chat_multimodal(text, images = images)
         # print(f'Received response {response[0:10]}...')
-        return nlip.NLIP_Factory.create_text(response)
+        # return nlip.NLIP_Factory.create_text(response)
 
 
 
