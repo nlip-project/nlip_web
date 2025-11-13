@@ -28,7 +28,7 @@ Module files are commonly used in a similar fashion to a library, although some 
 {
   <store_name>: [
     {
-      "item_name": "string",
+      "name": "string",
       "price": "string",
       "sizes": [
         "string"

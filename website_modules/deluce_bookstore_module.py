@@ -29,7 +29,7 @@ HTTP_HEADERS = {
 
 # takes a serch term or formatted query to search the site
 # returns list of product objects
-def search_product(query_term) -> list:
+def search_product(query_term):
     options = Options()
     options.add_argument("--headless=new")
     options.add_argument(f"user-agent={HTTP_HEADERS['User-Agent']}")
@@ -68,7 +68,7 @@ def search_product(query_term) -> list:
     finally:
         driver.quit()    
 
-    return product_list
+    return json.dumps(product_list)
 
 # return search results from a specific page
 def search_product_specific_page(query_term, pagenum) -> list:
@@ -93,7 +93,7 @@ def search_product_specific_page(query_term, pagenum) -> list:
     finally:
         driver.quit()    
 
-    return product_list
+    return json.dumps(product_list)
 
 # parses out poduct information from html return
 # returns list of dicts/json formatted objects
@@ -142,7 +142,14 @@ def parse_site_content(html_content) -> list:
         if availability == "Add to cart":
             availability = "in stock"
 
-        temp_prod["product_photo"] = prod.find('img')['src']
+        img_src = prod.find('img')['src']
+
+        # if image is the placeholder for no photo, make it ""
+        # nlip_web_client will filter this as NO IMAGE
+        if img_src == "/sites/all/themes/bookstore/images/no-photo.png":
+            img_src = ""
+
+        temp_prod["product_photo"] = img_src
 
         # add link to product page using link to item id stored in anchor tag
         temp_prod["link"] = (WEB_ADDRESS[:-1] + prod.find('a')['href'])
@@ -182,8 +189,5 @@ if __name__ == "__main__":
         print("Input serch term: ")
         search_term = input()
     
-    return_vals = search_product(search_term)
-    
-    json = json.dumps(return_vals)
-    print(json)
+    print(search_product(search_term))
     
