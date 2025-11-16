@@ -1,4 +1,4 @@
-# module for UWO Deluce Bookstore
+# module for UWO dellelce Bookstore
 
 # imports for library functions
 from bs4 import BeautifulSoup
@@ -11,7 +11,7 @@ import time
 import json
 
 ## CONSTANT VARIABLES
-STORE_NAME = "deulce_bookstore"
+STORE_NAME = "dellelce_bookstore"
 WEB_ADDRESS = 'https://bookstore.uwo.ca/'
 SEARCH_ARG = 'search/products?search='
 PAGE_NUM = "&page=" # no page number argument for fist page, second page starts at &page=1

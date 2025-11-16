@@ -4,8 +4,9 @@ from nlip_web.env import read_digits, read_string
 from nlip_server import server
 from nlip_sdk import nlip
 
-# import website module for deluce bookstore
-from website_modules import deluce_bookstore_module as dbm
+# import website module for dellelce bookstore
+from website_modules import dellelce_bookstore_module as dbm
+# from website_modules import main_module as mm
 import json
 
 
@@ -43,6 +44,7 @@ class ChatSession(nlip_ext.StatefulSession):
 
         # pass search term to website_modules
         results = dbm.search_product(text)
+        # results = mm.search_product(text)
         # print(results)
 
         # print(f'Received text {text[0:10]}...')

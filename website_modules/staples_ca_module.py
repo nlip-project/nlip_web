@@ -1,10 +1,16 @@
+import json
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
-def scrape_staples_selenium(product_name: str):
+STORE_NAME = 'staples_ca'
+WEB_ADDRESS = 'https://www.staples.ca/'
+SEARCH_ARG = 'search?query='
+
+#def scrape_staples_selenium(product_name: str):
+def search_product(product_name: str):
     # --- Chrome options ---
     options = Options()
     options.add_argument("--start-maximized")
@@ -18,7 +24,7 @@ def scrape_staples_selenium(product_name: str):
     options.add_argument("--headless=new")
 
     driver = webdriver.Chrome(options=options)
-    search_url = f"https://www.staples.ca/search?query={product_name}"
+    search_url = f"{WEB_ADDRESS}{SEARCH_ARG}{product_name}"
     driver.get(search_url)
 
     # wait for the page to load and scripts to render
@@ -34,8 +40,8 @@ def scrape_staples_selenium(product_name: str):
 
     # --- Parse with BeautifulSoup ---
     soup = BeautifulSoup(html, "html.parser")
-
-    results = []
+    results = {}
+    results[STORE_NAME] = []
     for a_tag in soup.select("a.product-link"):
         text = a_tag.get_text(separator=" ", strip=True)
 
@@ -51,20 +57,21 @@ def scrape_staples_selenium(product_name: str):
         price = price_el.get_text(strip=True) if price_el else "N/A"
 
         if text:
-            results.append({
+            results[STORE_NAME].append({
                 "title": text,
                 "price": price,
+                "product_image": "",
                 "link": link
             })
 
-    return results
+    return json.dumps(results)
 
 
 if __name__ == "__main__":
     searching = 'y'
     while searching == 'y':
         product_desc = input("Enter the name of the product: ")
-        products = scrape_staples_selenium("laptop")
+        products = search_product("laptop")
         for i, p in enumerate(products, 1):
             print("Name: " + p['title'])
             print("Price: " + p['price'])

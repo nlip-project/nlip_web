@@ -6,9 +6,16 @@ import requests  # For getting into Newegg and using its search function
 import json  # For formatting the data so it is easy to read/extract info
 from urllib.parse import quote  # Proper formatting of link
 
-headers = {
-    "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/140.0.0.0 Safari/537.36"}  # Extracted through network tab
+STORE_NAME = 'new_egg_ca'
+WEB_ADDRESS = 'https://www.newegg.ca/'
+SEARCH_ARG = 'p/pl?d='
 
+HTTP_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+    #'Accept-Language': 'en-US,en;q=0.9',
+    #'Accept-Encoding': 'gzip, deflate, br',
+    #'Connection': 'keep-alive',
+}
 
 def get_url(product_name, page):
     return 'https://www.newegg.ca/p/pl?d=' + quote(product_name)
@@ -42,11 +49,11 @@ def print_products(items):
 
         if title and price:  # Only add if title found (skip ads)
             products.append({
-                "Name": title,
-                "Price": price,
-                "Link": link,
-                "Image": image,
-                "Shipping Info": shipping
+                "name": title,
+                "price": price,
+                "link": link,
+                "product_photo": image,
+                "shipping_info": shipping
             })
 
     # How many products that were on the first page
@@ -60,11 +67,15 @@ def print_products(items):
                 print(attribute + ": " + str(p[attribute]))
             print()
 
+    return products
 
-def search_product(product_name):
+def search_product(product_name: str):
+    product_list = {}
+    product_list[STORE_NAME] = []
+
     try:
         session = requests.Session()
-        session.headers.update(headers)
+        session.headers.update(HTTP_HEADERS)
 
         url = get_url(product_name, 1)
 
@@ -72,10 +83,12 @@ def search_product(product_name):
         soup = BeautifulSoup(r.text, 'html.parser')  # No need to install lxml (html.parser), parse HTML
 
         # Same method of extracting info as Staples
-        print_products(soup.select('.item-cell'))
+        product_list[STORE_NAME]  = print_products(soup.select('.item-cell'))
         # If you want more pages, just ask and add next page to url and redo this process with that page (ex. &page2)
     except Exception as e:
         print(e)
+
+    return json.dumps(product_list)
 
 
 # Search loop

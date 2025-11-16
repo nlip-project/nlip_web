@@ -8,8 +8,8 @@ export default function ProductResults({products, isLoading}) {
             <h2 className="text-xl font-bold text-gray-800 mb-4">{storeName}</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {storeProducts.map((product, index) => (
+                <a href={product.link}>
                 <div key={index} className="border border-gray-200 rounded-lg p-4 hover:shadow-lg transition-shadow">
-                  <a href={product.link}>
                   {product.product_photo && (
                       <img
                         src={product.product_photo}
@@ -22,8 +22,8 @@ export default function ProductResults({products, isLoading}) {
                     <p className="text-sm text-gray-600 mb-2">{product.description}</p>
                   )}
                   <p className="text-lg font-bold text-green-600">${product.price}</p>
-                  </a>
                 </div>
+                </a>
               ))}
             </div>
           </div>

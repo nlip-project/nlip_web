@@ -3,7 +3,7 @@
 import { spawn } from 'node:child_process'
 
 export async function runModule(search_term) {
-    const path = "../../website_modules/deluce_bookstore_module.py"
+    const path = "../../website_modules/dellelce_bookstore_module.py"
 
     const program = spawn('python', [path, search_term])
 
