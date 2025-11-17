@@ -12,7 +12,7 @@ export default function Image() {
     <div className="min-h-screen bg-gray-100 p-6 flex items-center justify-center">
       <ChatContainer header="NLIP Client">
         <MessageBox messages={messages} isLoading={isLoading} />
-        <InputForm setMessages={setMessages} isLoading={isLoading} setIsLoading={setIsLoading} />
+        <InputForm setMessages={setMessages} isLoading={isLoading} setIsLoading={setIsLoading} allowFileUpload={true} />
       </ChatContainer>
     </div>
   );

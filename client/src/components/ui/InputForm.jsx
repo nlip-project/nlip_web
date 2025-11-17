@@ -2,9 +2,17 @@ import { useState } from 'react';
 
 import { NLIPClient } from '../../utils/nlip';
 
-export default function InputForm({ setMessages, isLoading, setIsLoading }) {
+export default function InputForm({ setMessages, isLoading, setIsLoading, allowFileUpload = false }) {
   const [input, setInput] = useState('');
+  const [selectedFile, setSelectedFile] = useState(null);
   const nlipClient = new NLIPClient();
+
+  const handleFileChange = (e) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
 
   const sendMessage = async (e) => {
     e.preventDefault();
@@ -14,11 +22,21 @@ export default function InputForm({ setMessages, isLoading, setIsLoading }) {
     setInput('');
     
     // Add user message to chat
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    const displayMessage = selectedFile 
+      ? `${userMessage} [File: ${selectedFile.name}]` 
+      : userMessage;
+    setMessages(prev => [...prev, { role: 'user', content: displayMessage }]);
     setIsLoading(true);
 
     try {
-      const data = await nlipClient.sendMessage(userMessage);
+      let data;
+      if (allowFileUpload && selectedFile) {
+        data = await nlipClient.sendWithImage(userMessage, selectedFile);
+        data = data.content;
+        setSelectedFile(null);
+      } else {
+        data = await nlipClient.sendMessage(userMessage);
+      }
       const botMessage = data || 'No response';
       
       // Add bot response to chat
@@ -36,6 +54,28 @@ export default function InputForm({ setMessages, isLoading, setIsLoading }) {
   return (
     <form onSubmit={sendMessage} className="border-t border-gray-200 bg-white p-4">
       <div className="flex gap-3">
+        {allowFileUpload && (
+          <>
+            <input
+              type="file"
+              id="file-input"
+              onChange={handleFileChange}
+              className="hidden"
+              accept="image/*"
+              disabled={isLoading}
+            />
+            <label
+              htmlFor="file-input"
+              className={`px-4 py-3 border border-gray-300 rounded-xl cursor-pointer transition-colors ${
+                selectedFile 
+                  ? 'bg-cyan-100 border-cyan-500 text-cyan-700' 
+                  : 'bg-white hover:bg-gray-50'
+              } ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {selectedFile ? '📎 ' + selectedFile.name : '📎 Attach'}
+            </label>
+          </>
+        )}
         <input
           type="text"
           value={input}

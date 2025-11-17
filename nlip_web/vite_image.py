@@ -40,7 +40,6 @@ class ChatSession(nlip_ext.StatefulSession):
             return nlip.NLIP_Factory.create_text("Error: Can't find my chat server")
 
         response = chat_server.chat_multimodal(text, images = images)
-        print(f'Received response {response[0:10]}...')
         return nlip.NLIP_Factory.create_text(response)
 
 

@@ -3,7 +3,7 @@ import Products from "./components/Products"
 import Image from "./components/Image"
 
 function App() {
-  const mode = import.meta.env.VITE_APP_MODE;
+  const mode = import.meta.env.VITE_APP_MODE || 'image';
 
   if (mode === "text") return <Text />
   if (mode === "products") return <Products />
