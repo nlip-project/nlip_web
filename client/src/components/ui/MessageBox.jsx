@@ -22,12 +22,23 @@ export default function ChatBox({messages, isLoading}) {
       )}
       {messages.map((msg, index) => (
         <div key={index} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-          <div className={`max-w-[70%] rounded-2xl px-4 py-3 ${
-            msg.role === 'user' 
-              ? 'bg-cyan-500 text-white rounded-tr-sm' 
-              : 'bg-white text-gray-800 shadow-md rounded-tl-sm border border-gray-200'
-          }`}>
-            <p className="whitespace-pre-line wrap-break-words">{msg.content}</p>
+          <div className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'} max-w-[70%]`}>
+            {msg.image && (
+              <div className="mb-1">
+                <img 
+                  src={msg.image} 
+                  alt={msg.fileName || 'Uploaded image'} 
+                  className="rounded-2xl max-w-full h-auto max-h-64 object-cover shadow-md"
+                />
+              </div>
+            )}
+            <div className={`rounded-2xl px-4 py-3 ${
+              msg.role === 'user' 
+                ? 'bg-cyan-500 text-white rounded-tr-sm' 
+                : 'bg-white text-gray-800 shadow-md rounded-tl-sm border border-gray-200'
+            }`}>
+              <p className="whitespace-pre-line wrap-break-words">{msg.content}</p>
+            </div>
           </div>
         </div>
       ))}

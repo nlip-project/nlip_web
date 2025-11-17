@@ -21,11 +21,14 @@ export default function InputForm({ setMessages, isLoading, setIsLoading, allowF
     const userMessage = input.trim();
     setInput('');
     
-    // Add user message to chat
-    const displayMessage = selectedFile 
-      ? `${userMessage} [File: ${selectedFile.name}]` 
-      : userMessage;
-    setMessages(prev => [...prev, { role: 'user', content: displayMessage }]);
+    // Add user message to chat with image data if present
+    const messageData = {
+      role: 'user',
+      content: userMessage,
+      image: selectedFile ? URL.createObjectURL(selectedFile) : null,
+      fileName: selectedFile?.name
+    };
+    setMessages(prev => [...prev, messageData]);
     setIsLoading(true);
 
     try {
