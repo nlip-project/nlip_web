@@ -19,5 +19,5 @@ chat = "scripts:start_chat"
 image = "scripts:start_image"
 vite-text = "scripts:start_vite_text"
 vite-products = "scripts:start_vite_products"
-
+vite-image = "scripts:start_vite_image"
 

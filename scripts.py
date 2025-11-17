@@ -42,7 +42,7 @@ def start_vite_text():
         # Build in client directory
         subprocess.run(["npm", "run", "build:text"], env=my_env, check=True, cwd="client")
         # Run Python script from parent directory
-        subprocess.run(["poetry", "run", "python", "nlip_web/vite_chat.py"], 
+        subprocess.run(["poetry", "run", "python", "nlip_web/vite_text.py"], 
                       env=my_env, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error executing command: {e}")
@@ -54,6 +54,17 @@ def start_vite_products():
         subprocess.run(["npm", "run", "build:products"], env=my_env, check=True, cwd="client")
         # Run Python script from parent directory
         subprocess.run(["poetry", "run", "python", "nlip_web/vite_chat.py"], 
+                      env=my_env, check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error executing command: {e}")
+
+def start_vite_image():
+    my_env = get_env(local_port=8050,chat_model="llava")
+    try:
+        # Build in client directory
+        subprocess.run(["npm", "run", "build:image"], env=my_env, check=True, cwd="client")
+        # Run Python script from parent directory
+        subprocess.run(["poetry", "run", "python", "nlip_web/vite_image.py"], 
                       env=my_env, check=True)
     except subprocess.CalledProcessError as e:
         print(f"Error executing command: {e}")
