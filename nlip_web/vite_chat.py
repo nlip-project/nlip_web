@@ -4,11 +4,7 @@ from nlip_web.env import read_digits, read_string
 from nlip_server import server
 from nlip_sdk import nlip
 
-# import website module for dellelce bookstore
-from website_modules import dellelce_bookstore_module as dbm
-# from website_modules import main_module as mm
-import json
-
+from website_modules import main_module as mm
 
 class ChatApplication(nlip_ext.SafeStatefulApplication):
     def __init__(self):
@@ -42,17 +38,15 @@ class ChatSession(nlip_ext.StatefulSession):
         if chat_server is None: 
             return nlip.NLIP_Factory.create_text("Error: Can't find my chat server")
 
-        # pass search term to website_modules
-        results = dbm.search_product(text)
-        # results = mm.search_product(text)
+        # pass search term to website_modules main search function
+        results = mm.search_product(text)
         # print(results)
 
         # print(f'Received text {text[0:10]}...')
         # response = chat_server.chat_multimodal(text, images = images)
         # print(f'Received response {response[0:10]}...')
         ## response_data = '{"Best Buy":[{"name":"Dell XPS 15","price":1299.99,"description":"15.6-inch FHD display, Intel Core i7, 16GB RAM, 512GB SSD"},{"name":"HP Pavilion 14","price":649.99,"description":"14-inch HD display, AMD Ryzen 5, 8GB RAM, 256GB SSD"}],"Amazon":[{"name":"Lenovo ThinkPad X1 Carbon","price":1549.99,"description":"14-inch 2K display, Intel Core i7, 16GB RAM, 1TB SSD, Business laptop"},{"name":"ASUS VivoBook 15","price":529.99,"description":"15.6-inch FHD display, Intel Core i5, 12GB RAM, 512GB SSD"}],"Walmart":[{"name":"Acer Aspire 5","price":479.99,"description":"15.6-inch FHD display, AMD Ryzen 3, 8GB RAM, 256GB SSD"},{"name":"Microsoft Surface Laptop 5","price":1199.99,"description":"13.5-inch PixelSense touchscreen, Intel Core i5, 8GB RAM, 256GB SSD"}]}'
-        response_dict = json.loads(results)
-        return nlip.NLIP_Factory.create_json(response_dict)
+        return nlip.NLIP_Factory.create_json(results)
 
 
 

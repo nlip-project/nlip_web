@@ -57,7 +57,7 @@ def print_products(items):
             })
 
     # How many products that were on the first page
-    num_of_products = len(products)
+    num_of_products = 0
     if num_of_products > 0:
         print("Number of products in stock: " + str(len(products)))
         # Print out all products found on the first page

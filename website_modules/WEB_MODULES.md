@@ -10,6 +10,7 @@ When used with nlip_web the following packages have to be added to poetry:
 
 1. `poetry add beautifulsoup4`
 2. `poetry add selenium`
+3. `poetry add requests`
 
 ** Server side requiremments**
 
