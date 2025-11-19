@@ -23,6 +23,18 @@ The [main module](./main_module.py) can be used to query a search term through e
 
 Each module has a primary function: **search_product(search_term: str)**. The function will return a json object representing the search results for the *search term*.
 
+## Running vite site
+
+The search client site can be run from `/nlip_web/` with:
+`./start.sh`
+
+## Running web_modules script
+
+The main module can be run as script from `/nlip_web/` with:
+`./run_main_module.sh`
+
+Since website_modules has relative imports, it cannot be run from within the website_modules directory
+
 ## Examples
 
 A [Hello World Program](./hello_world/) can be found in its respective folder.
