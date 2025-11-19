@@ -116,7 +116,7 @@ def parse_site_content(html_content) -> list:
         # extract it-em name
         temp_prod["name"] = prod.find('a').text
 
-        temp_prod["description"] = 'N/A'
+        temp_prod["description"] = 'No description available'
 
         # commerce-product-field is where price information is stored
         price_field = prod.find(class_="commerce-product-field")

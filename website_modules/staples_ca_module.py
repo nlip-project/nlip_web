@@ -1,13 +1,21 @@
 import json
+import sys
 import time
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
+## CONSTANT VARIABLES
 STORE_NAME = 'staples_ca'
 WEB_ADDRESS = 'https://www.staples.ca/'
 SEARCH_ARG = 'search?query='
+HTTP_HEADERS = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
+    # 'Accept-Language': 'en-US,en;q=0.9',
+    #'Accept-Encoding': 'gzip, deflate, br',
+    #'Connection': 'keep-alive',
+}
 
 #def scrape_staples_selenium(product_name: str):
 def search_product(product_name: str):
@@ -15,11 +23,7 @@ def search_product(product_name: str):
     options = Options()
     options.add_argument("--start-maximized")
     options.add_argument("--disable-blink-features=AutomationControlled")
-    options.add_argument(
-        "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-        "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/120.0.0.0 Safari/537.36"
-    )
+    options.add_argument(f"user-agent={HTTP_HEADERS['User-Agent']}")
     # run headless
     options.add_argument("--headless=new")
 
@@ -40,6 +44,7 @@ def search_product(product_name: str):
 
     # --- Parse with BeautifulSoup ---
     soup = BeautifulSoup(html, "html.parser")
+
     results = {}
     results[STORE_NAME] = []
     for a_tag in soup.select("a.product-link"):
@@ -56,18 +61,27 @@ def search_product(product_name: str):
         price_el = card.select_one("span.money.pre-money") if card else None
         price = price_el.get_text(strip=True) if price_el else "N/A"
 
+        # extract the img src
+        img_tag = card.find("img")
+        img_src = img_tag["src"] if img_tag and img_tag.has_attr("src") else None
+
         if text:
             results[STORE_NAME].append({
-                "title": text,
+                "name": text,
                 "price": price,
-                "product_image": "",
+                "product_photo": img_src,
+                "description": "No description available",
                 "link": link
             })
 
     return json.dumps(results)
 
+def main():
+    if len(sys.argv) > 1:
+        results = search_product(sys.argv[1])
+        print(results)
+        return
 
-if __name__ == "__main__":
     searching = 'y'
     while searching == 'y':
         product_desc = input("Enter the name of the product: ")
@@ -85,3 +99,6 @@ if __name__ == "__main__":
 
     print("Thank you for shopping at Staples!")
     # page%5D=2
+
+if __name__ == "__main__":
+    main()

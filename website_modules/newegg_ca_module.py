@@ -53,7 +53,8 @@ def print_products(items):
                 "price": price,
                 "link": link,
                 "product_photo": image,
-                "shipping_info": shipping
+                "shipping_info": shipping,
+                "description": "No description available",
             })
 
     # How many products that were on the first page
