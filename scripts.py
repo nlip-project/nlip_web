@@ -48,7 +48,7 @@ def start_vite_text():
         print(f"Error executing command: {e}")
 
 def start_vite_products():
-    my_env = get_env(local_port=8040,chat_model="llava")
+    my_env = get_env(local_port=8030,chat_model="llava")
     try:
         # Build in client directory
         subprocess.run(["npm", "run", "build:products"], env=my_env, check=True, cwd="client")
@@ -59,7 +59,7 @@ def start_vite_products():
         print(f"Error executing command: {e}")
 
 def start_vite_image():
-    my_env = get_env(local_port=8050,chat_model="llava")
+    my_env = get_env(local_port=8030,chat_model="llava")
     try:
         # Build in client directory
         subprocess.run(["npm", "run", "build:image"], env=my_env, check=True, cwd="client")
