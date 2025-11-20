@@ -1,0 +1,166 @@
+# author Aryaman Arora
+import time
+import random
+from bs4 import BeautifulSoup
+from urllib.parse import urlencode
+
+# Selenium imports for full JS rendering
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+
+STORE_NAME = 'homedepot_ca'
+SEARCH_TERM = input("Enter search term: ").strip()
+
+# get  HTML with Selenium 
+def get_html(url: str) -> str:
+
+    # Setup Chrome Options
+    options = Options()
+    # options.add_argument("--headless")   # run in background if needed
+    options.add_argument("--disable-blink-features=AutomationControlled")
+    options.add_argument(
+        "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+    )
+
+    #initialize Chrome web driver
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager().install()),
+        options=options
+    )
+
+    try:
+        # print("open browser")
+        driver.get(url)
+
+        #wait for the products to load or timeout after 15 seconds
+        try:
+            WebDriverWait(driver, 15).until(
+                EC.presence_of_element_located(
+                    (By.CSS_SELECTOR, "article.acl-product-card, div.acl-product-card")
+                )
+            )
+            # print("product loaded good.")
+        except:
+            print("Timed/Product not found")
+
+        #  Scroll to trigger  loading
+        driver.execute_script("window.scrollTo(0, 500);")
+        time.sleep(2)
+
+        #  Return full HTML source with loaded js content 
+        return driver.page_source
+
+    finally:
+        driver.quit()
+
+# build search URL
+def build_url(searchTerm: str) -> str:
+    return "https://www.homedepot.ca/search?" + urlencode({"q": searchTerm})
+
+# Parse HTML and return dictionary
+def parse_and_Dict(html_content: str) -> dict:
+
+    results = {STORE_NAME: []}
+    soup = BeautifulSoup(html_content, "lxml")
+
+    # slect all product cards
+    product_cards = soup.select(
+        "article.acl-product-card, "
+        "div.acl-product-card, "
+        "[data-component='ProductCard']"
+    )
+
+    # No products found, return empty dict
+    if not product_cards:
+        return {STORE_NAME: []}
+
+    for c in product_cards:
+
+        # product name
+        name_tag = (
+            c.select_one(".acl-product-card__title")
+            or c.select_one("h2")
+            or c.select_one("a.acl-product-card__title-link")
+        )
+        prod_name = name_tag.get_text(strip=True) if name_tag else None
+
+        #product price
+        price = (
+            c.select_one(".acl-product-card__price") 
+            or c.select_one("[class*='price-format']")
+            or c.select_one("[itemprop='price']")
+        )
+        
+        if price:
+            # price raw text format, "$179And00Cents/ each")
+            raw_price = price.get_text(strip=True)
+            #filter text
+            clean_price = raw_price.replace("And", ".").replace("Cents", "").replace("/ each", "").strip()
+            prod_price = clean_price
+        else:
+            prod_price = "N/A"
+
+        # product image 
+        img_tag = c.select_one("img")
+        img_src = None
+        if img_tag:
+            img_src = img_tag.get("src") or img_tag.get("data-src")
+
+
+        # product Link
+        link_tag = c.select_one("a.acl-product-card__title-link")
+        
+        # if class above not found fallback H2 tag
+        if not link_tag:
+            link_tag = c.select_one("h2 a")
+
+        prod_link = None
+        if link_tag and link_tag.get("href"):
+            href = link_tag["href"]
+            if href.startswith("/"):
+                prod_link = "https://www.homedepot.ca" + href
+            else:
+                prod_link = href
+
+        # if valid append product to list
+        if prod_name:
+            results[STORE_NAME].append({
+                "name": prod_name,
+                "price": prod_price,
+                "product_photo": img_src,
+                "description": "No description available",
+                "link": prod_link
+            })
+
+    return results
+
+# Main 
+if __name__ == "__main__":
+    search_url = build_url(SEARCH_TERM)
+
+    # selenium gets JS rendered Html
+    html_content = get_html(search_url)
+
+    # Parse and return products dict
+    item_dict = parse_and_Dict(html_content)
+    products = item_dict.get(STORE_NAME, [])
+
+    if not products:
+        print("No products were extracted.")
+    else:
+        # print(f"Found {len(products)} products:\n")
+        print("\n")
+        for product in products:
+            print(
+                "Name:", product["name"],
+                "\nPrice:", product["price"],
+                "\nLink:", product["link"],
+                "\nImage:", product["product_photo"],
+                "\n"
+            )
