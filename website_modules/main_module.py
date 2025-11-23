@@ -87,7 +87,7 @@ def search_product(search_term: str):
         for future in as_completed(future):
             result = future.result()
             if result is not None:
-                search_results.append(result)
+                search_results.extend(result)
 
     # has to return a proper python dictionary
     res = {}
