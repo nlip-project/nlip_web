@@ -14,6 +14,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from . import newegg_ca_module
 from . import  dellelce_bookstore_module 
 from . import  staples_ca_module
+from . import amazon_final
 # from . import  walmart_ca_module
 
 # THREAD COUNT
@@ -23,8 +24,9 @@ THREAD_PREFIX = "main_module_thread_"
 # Modules with completed search_product(str) functions
 search_modules = [
     dellelce_bookstore_module,
-    #newegg_ca_module, 
-    #staples_ca_module
+    newegg_ca_module, 
+    staples_ca_module
+    amazon_final,
 ]
 
 def single_thread_search_product(search_term: str):
