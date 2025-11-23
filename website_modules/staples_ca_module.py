@@ -17,6 +17,8 @@ HTTP_HEADERS = {
     #'Connection': 'keep-alive',
 }
 
+
+
 #def scrape_staples_selenium(product_name: str):
 def search_product(product_name: str):
     # --- Chrome options ---
@@ -68,7 +70,7 @@ def search_product(product_name: str):
             results.append({
                 "store": STORE_NAME,
                 "name": text,
-                "price": price,
+                "price": float(price[1:]),
                 "product_photo": img_src,
                 "description": "No description available",
                 "link": link

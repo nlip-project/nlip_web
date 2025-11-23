@@ -9,6 +9,7 @@ from urllib.parse import quote  # Proper formatting of link
 STORE_NAME = 'new_egg_ca'
 WEB_ADDRESS = 'https://www.newegg.ca/'
 SEARCH_ARG = 'p/pl?d='
+PAGE_NUM = "&page="
 
 HTTP_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36',
@@ -20,6 +21,9 @@ HTTP_HEADERS = {
 def get_url(product_name, page):
     return 'https://www.newegg.ca/p/pl?d=' + quote(product_name)
 
+def get_next_page(query_term: str, page_num: int):
+    query = query_term + PAGE_NUM + str(page_num)
+    return search_product(query)
 
 def print_products(items):
     products = []
@@ -51,7 +55,7 @@ def print_products(items):
             products.append({
                 "store": STORE_NAME,
                 "name": title,
-                "price": price,
+                "price": float(price[1:]),
                 "link": link,
                 "product_photo": image,
                 "shipping_info": shipping,
