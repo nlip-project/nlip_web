@@ -128,9 +128,6 @@ def search_products(search_term: str) -> list:
     return products 
 
 
-
-    
-
 # main function for use as a script
 if __name__ == "__main__":
     SEARCH_TERM = input("Enter search term: ").strip()
@@ -138,8 +135,6 @@ if __name__ == "__main__":
     search_url = build_url(SEARCH_TERM)
     html_content = get_HTML(search_url)
     item_list = parse_and_Dict(html_content)
-
-
 
     products = item_list
 
