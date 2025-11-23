@@ -23,8 +23,8 @@ THREAD_PREFIX = "main_module_thread_"
 # Modules with completed search_product(str) functions
 search_modules = [
     dellelce_bookstore_module,
-    newegg_ca_module, 
-    staples_ca_module
+    #newegg_ca_module, 
+    #staples_ca_module
 ]
 
 def single_thread_search_product(search_term: str):
@@ -40,8 +40,9 @@ def single_thread_search_product(search_term: str):
             product_results_json = search_function(search_term)
             
             # convert to dict
-            prods = json.loads(product_results_json)
-            search_results.append(prods)
+            prods = product_results_json
+            print(prods)
+            search_results = search_results + json.loads(prods)
 
         except Exception as e:
             print(f'ERROR with {module}\n')
@@ -86,7 +87,7 @@ def search_product(search_term: str):
         for future in as_completed(future):
             result = future.result()
             if result is not None:
-                search_results.append(result)
+                search_results.extend(result)
 
     # has to return a proper python dictionary
     res = {}

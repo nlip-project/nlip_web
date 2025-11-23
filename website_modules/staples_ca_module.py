@@ -17,6 +17,8 @@ HTTP_HEADERS = {
     #'Connection': 'keep-alive',
 }
 
+
+
 #def scrape_staples_selenium(product_name: str):
 def search_product(product_name: str):
     # --- Chrome options ---
@@ -45,8 +47,7 @@ def search_product(product_name: str):
     # --- Parse with BeautifulSoup ---
     soup = BeautifulSoup(html, "html.parser")
 
-    results = {}
-    results[STORE_NAME] = []
+    results = []
     for a_tag in soup.select("a.product-link"):
         text = a_tag.get_text(separator=" ", strip=True)
 
@@ -66,9 +67,10 @@ def search_product(product_name: str):
         img_src = img_tag["src"] if img_tag and img_tag.has_attr("src") else None
 
         if text:
-            results[STORE_NAME].append({
+            results.append({
+                "store": STORE_NAME,
                 "name": text,
-                "price": price,
+                "price": float(price[1:]),
                 "product_photo": img_src,
                 "description": "No description available",
                 "link": link
