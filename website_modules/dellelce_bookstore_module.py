@@ -27,6 +27,11 @@ HTTP_HEADERS = {
     'Connection': 'keep-alive',
 }
 
+def get_next_page(query_term: str, page_num: int):
+    page_num = page_num - 1
+    query = query_term + PAGE_NUM + str(1)
+    return search_product(query_term=query)
+
 # takes a serch term or formatted query to search the site
 # returns list of product objects
 def search_product(query_term):
@@ -122,7 +127,8 @@ def parse_site_content(html_content) -> list:
 
         # commerce-product-field is where price information is stored
         price_field = prod.find(class_="commerce-product-field")
-        temp_prod["price"] = price_field.find("div", class_="field-item").text
+        price = price_field.find("div", class_="field-item").text
+        temp_prod["price"] = (price[1:])
         ## can potentially contain <del>price<del> If item is on sale.
 
         # check if item has sizes:
@@ -191,5 +197,6 @@ if __name__ == "__main__":
         print("Input serch term: ")
         search_term = input()
     
-    print(search_product(search_term))
+    #print(search_product(search_term))
+    print(get_next_page(search_term, 2))
     
