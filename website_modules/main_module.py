@@ -74,6 +74,25 @@ def run_module_search(module: str, search_term: str, ):
         print(f'\t{e}\n')
         return None
 
+# func for thread to execute
+def run_module_next_page(module: str, search_term: str, page_num: int):
+    if not hasattr(module, 'get_next_page'):
+        return None
+    
+    try:
+        get_next_page = getattr(module, 'get_next_page')
+        product_results_json = get_next_page(search_term, page_num)
+            
+        # convert to dict
+        prods = json.loads(product_results_json)
+        return(prods)
+
+    except Exception as e:
+        print(f'ERROR with {module}\n')
+        print(f'\tFunction: [search_product(str) -> json]')
+        print(f'\t{e}\n')
+        return None
+
 def search_product(search_term: str):
     search_results = []
 
@@ -89,6 +108,25 @@ def search_product(search_term: str):
             if result is not None:
                 search_results.extend(result)
 
+    # has to return a proper python dictionary
+    res = {}
+    res['results'] = search_results
+    return res
+
+def get_next_page(search_term: str, page_num: int):
+    search_results = []
+
+    with ThreadPoolExecutor(max_workers=MAX_THREADS, thread_name_prefix=THREAD_PREFIX) as executor:
+        ## exectute
+        future = {
+            executor.submit(run_module_next_page, module, search_term, page_num): module
+            for module in search_modules
+        }
+
+        for future in as_completed(future):
+            result = future.result()
+            if result is not None:
+                search_results.extend(result)
     # has to return a proper python dictionary
     res = {}
     res['results'] = search_results
