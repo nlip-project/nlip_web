@@ -13,7 +13,8 @@ export default function SearchForm({ setProducts, isLoading, setIsLoading}) {
     try {
       const response = await nlipClient.sendMessage(query.trim(), true)
 
-      if (response) {
+      if (response && response.results.length > 0) {
+        response.results.sort((a,b) => a.price - b.price)
         setProducts(response);
       }
     } catch (error) {
