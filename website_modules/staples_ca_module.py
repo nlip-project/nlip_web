@@ -45,8 +45,7 @@ def search_product(product_name: str):
     # --- Parse with BeautifulSoup ---
     soup = BeautifulSoup(html, "html.parser")
 
-    results = {}
-    results[STORE_NAME] = []
+    results = []
     for a_tag in soup.select("a.product-link"):
         text = a_tag.get_text(separator=" ", strip=True)
 
@@ -66,7 +65,8 @@ def search_product(product_name: str):
         img_src = img_tag["src"] if img_tag and img_tag.has_attr("src") else None
 
         if text:
-            results[STORE_NAME].append({
+            results.append({
+                "store": STORE_NAME,
                 "name": text,
                 "price": price,
                 "product_photo": img_src,

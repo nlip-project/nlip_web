@@ -35,8 +35,8 @@ def search_product(query_term):
     options.add_argument(f"user-agent={HTTP_HEADERS['User-Agent']}")
     driver = webdriver.Chrome(options=options)
 
-    product_list = {}
-    product_list[STORE_NAME] = []
+    product_list = []
+    #product_list[STORE_NAME] = []
 
     try:
         driver.get(WEB_ADDRESS + SEARCH_ARG + query_term)
@@ -48,10 +48,10 @@ def search_product(query_term):
             driver.quit()
             return
 
-        product_list[STORE_NAME] = product_list[STORE_NAME] + parsed_content
+        product_list = parsed_content
 
         # first page non-empty, query remaining pages of content.
-        end_of_content = False
+        end_of_content = True
         current_page = 1 # second page starts at 1
         while not end_of_content:
             # sleep to not overwhelm site with continuous queries
@@ -64,7 +64,7 @@ def search_product(query_term):
                 break
             # increment page counter
             current_page += 1
-            product_list[STORE_NAME] = product_list[STORE_NAME] + parsed_content
+            product_list.extend(parsed_content)
     finally:
         driver.quit()    
 
@@ -114,6 +114,8 @@ def parse_site_content(html_content) -> list:
     for prod in products:
         temp_prod = {}
         # extract it-em name
+        temp_prod["store"] = STORE_NAME
+
         temp_prod["name"] = prod.find('a').text
 
         temp_prod["description"] = 'No description available'

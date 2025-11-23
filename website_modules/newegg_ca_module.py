@@ -49,6 +49,7 @@ def print_products(items):
 
         if title and price:  # Only add if title found (skip ads)
             products.append({
+                "store": STORE_NAME,
                 "name": title,
                 "price": price,
                 "link": link,
@@ -71,8 +72,7 @@ def print_products(items):
     return products
 
 def search_product(product_name: str):
-    product_list = {}
-    product_list[STORE_NAME] = []
+    product_list = []
 
     try:
         session = requests.Session()
@@ -84,7 +84,7 @@ def search_product(product_name: str):
         soup = BeautifulSoup(r.text, 'html.parser')  # No need to install lxml (html.parser), parse HTML
 
         # Same method of extracting info as Staples
-        product_list[STORE_NAME]  = print_products(soup.select('.item-cell'))
+        product_list = print_products(soup.select('.item-cell'))
         # If you want more pages, just ask and add next page to url and redo this process with that page (ex. &page2)
     except Exception as e:
         print(e)

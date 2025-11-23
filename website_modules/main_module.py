@@ -40,8 +40,9 @@ def single_thread_search_product(search_term: str):
             product_results_json = search_function(search_term)
             
             # convert to dict
-            prods = json.loads(product_results_json)
-            search_results.append(prods)
+            prods = product_results_json
+            print(prods)
+            search_results = search_results + json.loads(prods)
 
         except Exception as e:
             print(f'ERROR with {module}\n')
