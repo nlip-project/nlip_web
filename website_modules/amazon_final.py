@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 
 STORE_NAME = 'amazon_ca'
-SEARCH_TERM = input("Enter search term: ").strip()
+
 
 # Define a pool of user agents to rotate through
 # Used in HEADERS
@@ -55,8 +55,9 @@ def parse_and_Dict(html_content:str) -> dict:
     lower_html = html_content.lower()
     if "captchachallenge" in lower_html or "enter the characters you see below" in lower_html:
         print("Got CAPTCHA page")
-        return {STORE_NAME: []}   
-    results = {STORE_NAME: []}
+        return [] #{STORE_NAME: []}   ##########################
+    # results = {STORE_NAME: []}
+    results = []
     soup = BeautifulSoup(html_content, "lxml")
     # soup.prettify()
     with open("finalAmzSoup.html", "w", encoding="utf-8") as f:
@@ -69,7 +70,7 @@ def parse_and_Dict(html_content:str) -> dict:
     #no products found, return empty dict
     if not product_cards:
         print("No product cards found")
-        return {STORE_NAME: []}
+        return [] #{STORE_NAME: []} ###########################
     
     for c in product_cards:
         #product name 
@@ -88,46 +89,69 @@ def parse_and_Dict(html_content:str) -> dict:
 
         #product Link 
         link_tag = c.select_one("h2 a[href]")
+        
+        # alternative select
+        if not link_tag:
+            link_tag = c.select_one("a.a-link-normal.s-underline-text[href]")
+        if not link_tag:
+            link_tag = c.select_one("a.s-no-outline[href]")
+            
         if link_tag:
             href = link_tag["href"]
+            # handle relative urls
             if href.startswith("/"):
                 prod_link = "https://www.amazon.ca" + href
             else:
                 prod_link = href
         else:
             prod_link = None
+     
 
         if prod_name:
-            results[STORE_NAME].append({
+            results.append({
+                "store": STORE_NAME,
                 "name": prod_name,
                 "price": prod_price,
                 "product_photo": img_src,
                 "description": "No description available",
-                "link": prod_link
-            })
+                "link": prod_link})
     
     return results
+
+def search_products(search_term: str) -> list:
+    
+    search_url = build_url(search_term)
+    html_content = get_HTML(search_url)
+    item_list = parse_and_Dict(html_content)
+    products = item_list
+
+    return products 
+
+
 
     
 
 # main function for use as a script
 if __name__ == "__main__":
+    SEARCH_TERM = input("Enter search term: ").strip()
     # print("this is search term: " + SEARCH_TERM)
     search_url = build_url(SEARCH_TERM)
     html_content = get_HTML(search_url)
-    item_dict = parse_and_Dict(html_content)
+    item_list = parse_and_Dict(html_content)
 
-    products = item_dict.get(STORE_NAME, [])
+
+
+    products = item_list
 
     if not products:
         print("No products were found")
     else:
-        for product in products:
-            print( 
-                  "Name:", product["name"],
-                  "\nPrice:", product["price"],
-                  "\nLink:", product["link"],
-                  "\nImage:", product["product_photo"],
-                   "\n\n")
+        for index, product in enumerate(products, 1):
+            print(f"Item {index}:")
+            print(f"Name:  {product['name']}")
+            print(f"Price: {product['price']}")
+            print(f"Link:  {product['link']}")
+            print(f"Image: {product['product_photo']}")
+            print("-" * 60) # visual separator
 
 
