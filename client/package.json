@@ -8,7 +8,7 @@
     "build": "vite build",
     "build:text": "VITE_APP_MODE=text vite build",
     "build:products": "VITE_APP_MODE=products vite build",
-    "build:images": "VITE_APP_MODE=images vite build",
+    "build:image": "VITE_APP_MODE=image vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
