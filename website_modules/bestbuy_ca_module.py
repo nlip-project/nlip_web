@@ -24,7 +24,7 @@ def get_html(url: str) -> str:
         "user-agent=Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
     )
-    # options.add_argument("--headless") ######################################
+    options.add_argument("--headless") ######################################
 
     driver = webdriver.Chrome(options=options)
 
@@ -82,7 +82,7 @@ def parse_and_list(html_content: str) -> dict:
         prod_price = "N/A"
         if price_tag:
             raw_price = price_tag.get_text(strip=True)
-            # fix price duplicated eg $99$99 slit 
+            # fix price duplicated eg $99$99 split 
             if raw_price.count('$') > 1:
                 # split price by $ take second part
                 parts = raw_price.split('$') # parts[0] is empty, parts[1] is first price
@@ -96,7 +96,8 @@ def parse_and_list(html_content: str) -> dict:
             if container:
                 raw_price = container.get_text(strip=True)
                 if raw_price.count('$') > 1:
-                    prod_price = "$" + raw_price.split('$')[1]
+                    prod_price = raw_price.split('$')[1]
+                    prod_price = float(prod_price.replace("$", "").replace(",", ""))
                 else:
                     prod_price = raw_price
 
