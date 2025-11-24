@@ -104,6 +104,7 @@ def parse_and_Dict(html_content: str) -> dict:
             #filter text
             clean_price = raw_price.replace("And", ".").replace("Cents", "").replace("/ each", "").strip()
             prod_price = clean_price
+            prod_price = float(prod_price.replace("$", "").replace(",", ""))
         else:
             prod_price = "N/A"
 

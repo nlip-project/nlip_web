@@ -59,9 +59,9 @@ def parse_and_Dict(html_content:str) -> dict:
     # results = {STORE_NAME: []}
     results = []
     soup = BeautifulSoup(html_content, "lxml")
-    # soup.prettify()
-    with open("finalAmzSoup.html", "w", encoding="utf-8") as f:
-        f.write(str(soup))
+    # uncomment below to debug html content
+    # with open("finalAmzSoup.html", "w", encoding="utf-8") as f:
+    #     f.write(str(soup))
     
     # select all divs with class 's-main-slot' && inside that dive any element with non empty data-asin attribute
     # data-asin is the unique identifier for each product on amazon
@@ -82,6 +82,8 @@ def parse_and_Dict(html_content:str) -> dict:
         # prodcuct price 
         price = c.select_one("span.a-price > span.a-offscreen")
         prod_price = price.get_text(strip=True) if price else "N/A"
+        if prod_price != "N/A":
+            prod_price = float(prod_price.replace("$", "").replace(",", ""))
 
         #product image
         img_tag = c.select_one("img.s-image")
@@ -141,6 +143,7 @@ if __name__ == "__main__":
     if not products:
         print("No products were found")
     else:
+        # print("this price type", type(prod_price))
         for index, product in enumerate(products, 1):
             print(f"Item {index}:")
             print(f"Name:  {product['name']}")
