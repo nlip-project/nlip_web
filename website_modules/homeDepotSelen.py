@@ -169,7 +169,7 @@ def search_product(search_term: str) -> list:
 
     return json.dumps(products)
 
-def get_next_page (search_term: str, page_num: int) -> list:
+def get_next_page(search_term: str, page_num: int) -> list:
     next_url = next_page_url(search_term, page_num)
     html_content = get_html(next_url)
     item_list = parse_and_Dict(html_content)
