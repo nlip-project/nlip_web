@@ -55,7 +55,7 @@ def print_products(items):
             products.append({
                 "store": STORE_NAME,
                 "name": title,
-                "price": float(price[1:]),
+                "price": float(price),
                 "link": link,
                 "product_photo": image,
                 "shipping_info": shipping,
