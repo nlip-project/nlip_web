@@ -90,21 +90,10 @@ def parse_and_Dict(html_content:str) -> dict:
         img_src = img_tag["src"] if img_tag and img_tag.get("src") else None
 
         #product Link 
-        link_tag = c.select_one("h2 a[href]")
+        product_asin = c.get("data-asin")
         
-        # alternative select
-        if not link_tag:
-            link_tag = c.select_one("a.a-link-normal.s-underline-text[href]")
-        if not link_tag:
-            link_tag = c.select_one("a.s-no-outline[href]")
-            
-        if link_tag:
-            href = link_tag["href"]
-            # handle relative urls
-            if href.startswith("/"):
-                prod_link = "https://www.amazon.ca" + href
-            else:
-                prod_link = href
+        if product_asin:
+            prod_link = f"https://www.amazon.ca/dp/{product_asin}"
         else:
             prod_link = None
      
