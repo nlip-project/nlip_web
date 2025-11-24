@@ -14,7 +14,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
 STORE_NAME = 'homedepot_ca'
-SEARCH_TERM = input("Enter search term: ").strip()
 
 # get  HTML with Selenium 
 def get_html(url: str) -> str:
@@ -47,7 +46,7 @@ def get_html(url: str) -> str:
             )
             # print("product loaded good.")
         except:
-            print("Timed/Product not found")
+            print("Timed out/Product not found")
 
         #  Scroll to trigger  loading
         driver.execute_script("window.scrollTo(0, 500);")
@@ -66,7 +65,7 @@ def build_url(searchTerm: str) -> str:
 # Parse HTML and return dictionary
 def parse_and_Dict(html_content: str) -> dict:
 
-    results = {STORE_NAME: []}
+    results = [] 
     soup = BeautifulSoup(html_content, "lxml")
 
     # slect all product cards
@@ -78,7 +77,7 @@ def parse_and_Dict(html_content: str) -> dict:
 
     # No products found, return empty dict
     if not product_cards:
-        return {STORE_NAME: []}
+        return [] ####
 
     for c in product_cards:
 
@@ -130,18 +129,28 @@ def parse_and_Dict(html_content: str) -> dict:
 
         # if valid append product to list
         if prod_name:
-            results[STORE_NAME].append({
+            results.append({"store": STORE_NAME,
                 "name": prod_name,
                 "price": prod_price,
                 "product_photo": img_src,
                 "description": "No description available",
-                "link": prod_link
-            })
-
+                "link": prod_link})
+            
     return results
 
-# Main 
+# search products used by main_module.py to return product results to main module
+def search_products(search_term: str) -> list:
+    
+    search_url = build_url(search_term)
+    html_content = get_html(search_url)
+    item_list = parse_and_Dict(html_content)
+    products = item_list
+
+    return products
+
+# Main to run as script
 if __name__ == "__main__":
+    SEARCH_TERM = input("Enter search term: ").strip()
     search_url = build_url(SEARCH_TERM)
 
     # selenium gets JS rendered Html
@@ -149,18 +158,15 @@ if __name__ == "__main__":
 
     # Parse and return products dict
     item_dict = parse_and_Dict(html_content)
-    products = item_dict.get(STORE_NAME, [])
+    products = item_dict
 
     if not products:
         print("No products were extracted.")
     else:
-        # print(f"Found {len(products)} products:\n")
-        print("\n")
-        for product in products:
-            print(
-                "Name:", product["name"],
-                "\nPrice:", product["price"],
-                "\nLink:", product["link"],
-                "\nImage:", product["product_photo"],
-                "\n"
-            )
+        for index, product in enumerate(products, 1):
+            print(f"Item {index}:")
+            print(f"Name:  {product['name']}")
+            print(f"Price: {product['price']}")
+            print(f"Link:  {product['link']}")
+            print(f"Image: {product['product_photo']}")
+            print("-" * 60) # visual separator
