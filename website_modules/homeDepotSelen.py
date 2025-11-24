@@ -20,14 +20,13 @@ def get_html(url: str) -> str:
 
     # Setup Chrome Options
     options = Options()
-    # options.add_argument("--headless")   # run in background if needed
     options.add_argument("--disable-blink-features=AutomationControlled")
     options.add_argument(
         "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
     )
     # run headless
-    options.add_argument("--headless=new")
+    # options.add_argument("--headless=new")
 
     #initialize Chrome web driver
     driver = webdriver.Chrome(
@@ -51,7 +50,20 @@ def get_html(url: str) -> str:
             print("Timed out/Product not found")
 
         #  Scroll to trigger  loading
-        driver.execute_script("window.scrollTo(0, 500);")
+        if "page=" in url:
+            # Incremental scrolling hit trigger zones
+            current_height = 0
+            while True:
+                current_height += 1200 
+                driver.execute_script(f"window.scrollTo(0, {current_height});")
+                time.sleep(1) # pause let js load new node
+                
+                # Check total height to see if we reached the bottom
+                total_height = driver.execute_script("return document.body.scrollHeight")
+                if current_height >= total_height:
+                    break
+        else:
+            driver.execute_script("window.scrollTo(0, 1000);")
         time.sleep(2)
 
         #  Return full HTML source with loaded js content 
@@ -63,6 +75,8 @@ def get_html(url: str) -> str:
 # build search URL
 def build_url(searchTerm: str) -> str:
     return "https://www.homedepot.ca/search?" + urlencode({"q": searchTerm})
+def next_page_url(searchTerm: str, page_num: int) -> str:
+    return "https://www.homedepot.ca/search?" + urlencode({"q": searchTerm, "page": page_num})
 
 # Parse HTML and return list
 def parse_and_Dict(html_content: str) -> dict:
@@ -104,7 +118,10 @@ def parse_and_Dict(html_content: str) -> dict:
             #filter text
             clean_price = raw_price.replace("And", ".").replace("Cents", "").replace("/ each", "").strip()
             prod_price = clean_price
-            prod_price = float(prod_price.replace("$", "").replace(",", ""))
+            try: 
+                prod_price = float(prod_price.replace("$", "").replace(",", ""))
+            except ValueError:
+                prod_price = "N/A"
         else:
             prod_price = "N/A"
 
@@ -151,10 +168,20 @@ def search_products(search_term: str) -> list:
 
     return products
 
+def get_next_page (search_term: str, page_num: int) -> list:
+    next_url = next_page_url(search_term, page_num)
+    html_content = get_html(next_url)
+    item_list = parse_and_Dict(html_content)
+    products = item_list
+
+    return products
+
 # Main to run as script
 if __name__ == "__main__":
     SEARCH_TERM = input("Enter search term: ").strip()
-    search_url = build_url(SEARCH_TERM)
+    # search_url = build_url(SEARCH_TERM)
+    search_url = next_page_url(SEARCH_TERM,2)
+    print("this is search url:", search_url)
 
     # selenium gets JS rendered Html
     html_content = get_html(search_url)
