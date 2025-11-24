@@ -15,6 +15,7 @@ from . import newegg_ca_module
 from . import  dellelce_bookstore_module 
 from . import  staples_ca_module
 from . import amazon_final
+from . import homeDepotSelen
 # from . import  walmart_ca_module
 
 # THREAD COUNT
@@ -26,7 +27,8 @@ search_modules = [
     dellelce_bookstore_module,
     newegg_ca_module, 
     staples_ca_module,
-    amazon_final
+    amazon_final,
+    homeDepotSelen
 ]
 
 def single_thread_search_product(search_term: str):
