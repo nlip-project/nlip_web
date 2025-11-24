@@ -26,6 +26,8 @@ def get_html(url: str) -> str:
         "user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
     )
+    # run headless
+    options.add_argument("--headless=new")
 
     #initialize Chrome web driver
     driver = webdriver.Chrome(
