@@ -64,7 +64,7 @@ def get_html(url: str) -> str:
 def build_url(searchTerm: str) -> str:
     return "https://www.homedepot.ca/search?" + urlencode({"q": searchTerm})
 
-# Parse HTML and return dictionary
+# Parse HTML and return list
 def parse_and_Dict(html_content: str) -> dict:
 
     results = [] 
