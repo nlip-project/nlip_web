@@ -43,7 +43,8 @@ class ChatSession(nlip_ext.StatefulSession):
         response = chat_server.chat("\"" + response + "\"" + "\nGive me the product that we are searching for. Be very concise, just a 1-2 words.")
         print("Shortened search: " ,response)
         # pass search term to website_modules main search function
-        results = mm.search_product(response)
+        # results = mm.search_product(response)
+        results = mm.single_thread_search_product(response)
         # print(results)
 
         # print(f'Received text {text[0:10]}...')

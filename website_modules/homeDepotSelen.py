@@ -1,6 +1,7 @@
 # author Aryaman Arora
 import time
 import random
+import json
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 
@@ -26,7 +27,7 @@ def get_html(url: str) -> str:
         "AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
     )
     # run headless
-    # options.add_argument("--headless=new")
+    options.add_argument("--headless=new")
 
     #initialize Chrome web driver
     driver = webdriver.Chrome(
@@ -159,14 +160,14 @@ def parse_and_Dict(html_content: str) -> dict:
     return results
 
 # search products used by main_module.py to return product results to main module
-def search_products(search_term: str) -> list:
+def search_product(search_term: str) -> list:
     
     search_url = build_url(search_term)
     html_content = get_html(search_url)
     item_list = parse_and_Dict(html_content)
     products = item_list
 
-    return products
+    return json.dumps(products)
 
 def get_next_page (search_term: str, page_num: int) -> list:
     next_url = next_page_url(search_term, page_num)
@@ -174,7 +175,7 @@ def get_next_page (search_term: str, page_num: int) -> list:
     item_list = parse_and_Dict(html_content)
     products = item_list
 
-    return products
+    return json.dumps(products)
 
 # Main to run as script
 if __name__ == "__main__":

@@ -11,6 +11,8 @@ nlip-server = {path = "../nlip_server", develop = true}
 beautifulsoup4 = "^4.14.2"
 selenium = "^4.38.0"
 requests = "^2.32.5"
+webdriver-manager = "^4.0.2"
+lxml = "^6.0.2"
 
 
 [build-system]

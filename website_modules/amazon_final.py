@@ -1,6 +1,7 @@
 #author Aryaman Arora
 import random, time
 import requests
+import json
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 
@@ -116,7 +117,7 @@ def search_products(search_term: str) -> list:
     item_list = parse_and_Dict(html_content)
     products = item_list
 
-    return products 
+    return json.dumps(products) 
 
 
 # main function for use as a script
