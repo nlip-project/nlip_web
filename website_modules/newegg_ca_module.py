@@ -42,6 +42,7 @@ def print_products(items):
             dollars = dollars_tag.text.strip()
             cents = cents_tag.text.strip() if cents_tag else "00"
             price = f"{dollars}{cents}"
+            price = float(price)
 
         # Image
         img_tag = item.select_one("img")
@@ -55,7 +56,7 @@ def print_products(items):
             products.append({
                 "store": STORE_NAME,
                 "name": title,
-                "price": float(price),
+                "price": price,
                 "link": link,
                 "product_photo": image,
                 "shipping_info": shipping,
