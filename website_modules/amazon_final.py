@@ -110,7 +110,7 @@ def parse_and_Dict(html_content:str) -> dict:
     
     return results
 
-def search_products(search_term: str) -> list:
+def search_product(search_term: str) -> list:
     
     search_url = build_url(search_term)
     html_content = get_HTML(search_url)

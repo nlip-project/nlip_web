@@ -145,7 +145,7 @@ def parse_and_list(html_content: str) -> dict:
     return results
 
 # search products used by main_module.py to return product results to main module
-def search_products(search_term: str) -> list:
+def search_product(search_term: str) -> list:
     search_url = build_url(search_term)
     html_content = get_html(search_url)
     products = parse_and_list(html_content)
