@@ -61,7 +61,7 @@ class ChatSession(nlip_ext.StatefulSession):
         )
         #pass prompt 2 to optimize search term
         response = chat_server.chat(prompt_2)
-        print("Shortened Optimized search: " ,response, "\n\n")
+        print("\n\nShortened Optimized search: " ,response, "\n\n")
         
         # pass search term to website_modules main search function
         # results = mm.search_product(response)
