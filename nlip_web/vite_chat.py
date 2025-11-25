@@ -37,11 +37,32 @@ class ChatSession(nlip_ext.StatefulSession):
         chat_server = self.nlip_app.retrieve_session_data(self.get_correlator())
         if chat_server is None: 
             return nlip.NLIP_Factory.create_text("Error: Can't find my chat server")
+        print ("\n\nUser Origional text: ", text, "\n\n")
 
-        response = chat_server.chat("\"" + text + "\"" + "\nSummarize the search query and convert into a command like 'Find me X'. Be concise.")
-        print("Summary: ", response)
-        response = chat_server.chat("\"" + response + "\"" + "\nGive me the product that we are searching for. Be very concise, just a 1-2 words.")
-        print("Shortened search: " ,response)
+        prompt_1 = (
+            "\"" + text + "\"\n"
+            "Analyze this shopping request. Extract the Product, Brand, and translate casual adjectives into technical specs. "
+            "(e.g., change 'strong' to 'Heavy Duty', 'cheap' to 'Budget', 'fast' to 'High Speed'). "
+            "CRITICAL: Do NOT add attributes (like price, speed, or budget) if the user did not explicitly mention them. "
+            "Output ONLY the Brand, Product, and Valid Technical Attributes found in the text."
+        )
+        #pass prompt 1 to summarize search parameters
+        response = chat_server.chat(prompt_1)
+        print("Search Summary is: ", response)
+
+        prompt_2 = (
+            "\"" + response + "\"\n"
+            "Convert this summary into a clean search bar string, for shopping wesites like Amazon Canada ,Home Depot Canada etc. "
+            "Format as a space-separated string: [Product Category] [Brand] [Key Technical Adjective]."
+            "Key Technical Adjective are derived from technical attributes and User Requirments interpret these to create meaningful Adjectives."
+            "Do not use symbols like '+' or '-' or '-' etc. Remove filler words like 'capable of', 'for', 'with'. "
+            "Max 6 words. "
+            "Example output: 'Power Drill DeWalt Heavy Duty'."
+        )
+        #pass prompt 2 to optimize search term
+        response = chat_server.chat(prompt_2)
+        print("Shortened Optimized search: " ,response, "\n\n")
+        
         # pass search term to website_modules main search function
         # results = mm.search_product(response)
         results = mm.single_thread_search_product(response)
