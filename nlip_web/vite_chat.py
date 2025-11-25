@@ -57,7 +57,7 @@ class ChatSession(nlip_ext.StatefulSession):
             "Key Technical Adjective are derived from technical attributes and User Requirments interpret these to create meaningful Adjectives."
             "Do not use symbols like '+' or '-' or '-' etc. Remove filler words like 'capable of', 'for', 'with'. "
             "Max 6 words. "
-            "Example output: 'Power Drill DeWalt Heavy Duty' or 'Phone 128gb Android."
+            "Example output: 'Power Drill DeWalt Heavy Duty' or 'Phone 128gb Android, or Lumber 2x4."
         )
         #pass prompt 2 to optimize search term
         response = chat_server.chat(prompt_2)
