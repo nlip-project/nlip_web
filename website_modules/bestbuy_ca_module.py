@@ -88,7 +88,7 @@ def parse_and_list(html_content: str) -> dict:
                 # split price by $ take second part
                 parts = raw_price.split('$') # parts[0] is empty, parts[1] is first price
                 if len(parts) > 1:
-                    prod_price = "$" + parts[1]
+                    prod_price = parts[1]
             else:
                 prod_price = raw_price
         else:
