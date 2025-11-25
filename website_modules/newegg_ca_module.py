@@ -6,7 +6,7 @@ import requests  # For getting into Newegg and using its search function
 import json  # For formatting the data so it is easy to read/extract info
 from urllib.parse import quote  # Proper formatting of link
 
-STORE_NAME = 'new_egg_ca'
+STORE_NAME = 'New Egg Canada'
 WEB_ADDRESS = 'https://www.newegg.ca/'
 SEARCH_ARG = 'p/pl?d='
 PAGE_NUM = "&page="

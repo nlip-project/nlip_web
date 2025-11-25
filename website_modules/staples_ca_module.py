@@ -7,7 +7,7 @@ from selenium.webdriver.chrome.options import Options
 from bs4 import BeautifulSoup
 
 ## CONSTANT VARIABLES
-STORE_NAME = 'staples_ca'
+STORE_NAME = 'Staples Canada'
 WEB_ADDRESS = 'https://www.staples.ca/'
 SEARCH_ARG = 'search?query='
 HTTP_HEADERS = {

@@ -5,7 +5,7 @@ import json
 from bs4 import BeautifulSoup
 from urllib.parse import urlencode
 
-STORE_NAME = 'amazon_ca'
+STORE_NAME = 'Amazon Canada'
 
 
 # Define a pool of user agents to rotate through

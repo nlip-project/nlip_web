@@ -11,7 +11,7 @@ import time
 import json
 
 ## CONSTANT VARIABLES
-STORE_NAME = "dellelce_bookstore"
+STORE_NAME = "Dellelce Bookstore UWO"
 WEB_ADDRESS = 'https://bookstore.uwo.ca/'
 SEARCH_ARG = 'search/products?search='
 PAGE_NUM = "&page=" # no page number argument for fist page, second page starts at &page=1

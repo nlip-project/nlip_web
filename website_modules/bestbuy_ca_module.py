@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 
-STORE_NAME = 'bestbuy_ca'
+STORE_NAME = 'Best Buy Canada'
 
 # get html with selenium
 def get_html(url: str) -> str:

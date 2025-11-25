@@ -25,13 +25,12 @@ THREAD_PREFIX = "main_module_thread_"
 
 # Modules with completed search_product(str) functions
 search_modules = [
-    # dellelce_bookstore_module,
-    # newegg_ca_module, 
-    # staples_ca_module,
     amazon_final,
     homeDepotSelen,
     bestbuy_ca_module
-
+    # # ,dellelce_bookstore_module,
+    # newegg_ca_module, 
+    # staples_ca_module
 ]
 
 def single_thread_search_product(search_term: str):
