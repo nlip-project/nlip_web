@@ -42,6 +42,7 @@ class ChatSession(nlip_ext.StatefulSession):
         prompt_1 = (
             "\"" + text + "\"\n"
             "Analyze this shopping request. Extract the Product, Brand, and translate casual adjectives into technical specs. "
+            "If the User provides their use case without knowing what product would fit their application, infer the appropriate technical attributes needed and recommend the product accordingly. "
             "(e.g., change 'strong' to 'Heavy Duty', 'cheap' to 'Budget', 'fast' to 'High Speed'). "
             "CRITICAL: Do NOT add attributes (like price, speed, or budget) if the user did not explicitly mention them. "
             "Output ONLY the Brand, Product, and Valid Technical Attributes found in the text."
@@ -57,7 +58,8 @@ class ChatSession(nlip_ext.StatefulSession):
             "Key Technical Adjective are derived from technical attributes and User Requirments interpret these to create meaningful Adjectives."
             "Do not use symbols like '+' or '-' or '-' etc. Remove filler words like 'capable of', 'for', 'with'. "
             "Return MAXIMUM 6 words. "
-            "Example output: 'Power Drill DeWalt Heavy Duty' or 'Phone 128gb Android, or 'Lumber 2x4'."
+            "Final returned optimized search term must be max 6 words long strict rule."
+            "Example output: 'Power Drill DeWalt Heavy Duty' or 'Phone 128gb Android, or 'Lumber 2x4', 'Speaker Wire Cable Managment Drywall'."
         )
         #pass prompt 2 to optimize search term
         response = chat_server.chat(prompt_2)
