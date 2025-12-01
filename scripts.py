@@ -22,16 +22,16 @@ def run_command(command:str, new_env:dict):
 
 def start_chat():
     """
-    Call the command poetry run python responder/simple_responder.py
+    Start the text chat server on port 8010
     """
-    my_env = get_env(local_port=8010,chat_model="llama3")
+    my_env = get_env(local_port=8010, chat_model="granite3-moe")
     command = f"poetry run python nlip_web/text_chat.py"
     run_command(command, my_env)
 
 def start_image():
     """
-    Call the command poetry run python responder/simple_responder.py
+    Start the image chat server on port 8020
     """
-    my_env = get_env(local_port=8020,chat_model="llava")
+    my_env = get_env(local_port=8020, chat_model="llava")
     command = f"poetry run python nlip_web/image_chat.py"
     run_command(command, my_env)
