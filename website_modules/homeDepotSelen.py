@@ -51,11 +51,11 @@ def get_html(url: str) -> str:
             print("Timed out/Product not found")
 
         #  Scroll to trigger  loading
-        if "page=" in url:
+        if ".ca" in url:
             # Incremental scrolling hit trigger zones
             current_height = 0
             while True:
-                current_height += 1200 
+                current_height += 500 
                 driver.execute_script(f"window.scrollTo(0, {current_height});")
                 time.sleep(1) # pause let js load new node
                 
@@ -180,8 +180,8 @@ def get_next_page(search_term: str, page_num: int) -> list:
 # Main to run as script
 if __name__ == "__main__":
     SEARCH_TERM = input("Enter search term: ").strip()
-    # search_url = build_url(SEARCH_TERM)
-    search_url = next_page_url(SEARCH_TERM,2)
+    search_url = build_url(SEARCH_TERM)
+    # search_url = next_page_url(SEARCH_TERM,2)
     print("this is search url:", search_url)
 
     # selenium gets JS rendered Html
