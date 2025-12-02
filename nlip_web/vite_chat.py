@@ -40,27 +40,30 @@ class ChatSession(nlip_ext.StatefulSession):
             return nlip.NLIP_Factory.create_text("Error: Can't find my chat server")
         print ("\n\nUser Original text: ", text, "\n\n")
 
-        prompt_1 = (
-            "\"" + text + "\"\n"
-            "Analyze this shopping request. Extract the Product, Brand, and translate casual adjectives into technical specs. "
-            "If the User provides their use case without knowing what product would fit their application, infer the appropriate technical attributes needed and recommend the product accordingly. "
-            "(e.g., change 'strong' to 'Heavy Duty', 'cheap' to 'Budget', 'fast' to 'High Speed'). "
-            "CRITICAL: Do NOT add attributes (like price, speed, or budget) if the user did not explicitly mention them. "
-            "Output ONLY the Brand, Product, and Valid Technical Attributes found in the text."
-        )
-        #pass prompt 1 to summarize search parameters
-        response = chat_server.chat(prompt_1)
-        print("Search Summary is: ", response)
+        search_term = ""
+        while search_term.replace(" ", "") == "":
+            prompt_1 = (
+                "\"" + text + "\"\n"
+                "Analyze this shopping request. Extract the Product, Brand, and translate casual adjectives into technical specs. "
+                "If the User provides their use case without knowing what product would fit their application, infer the appropriate technical attributes needed and recommend the product accordingly. "
+                "(e.g., change 'strong' to 'Heavy Duty', 'cheap' to 'Budget', 'fast' to 'High Speed'). "
+                "CRITICAL: Do NOT add attributes (like price, speed, or budget) if the user did not explicitly mention them. "
+                "Output ONLY the Brand, Product, and Valid Technical Attributes found in the text."
+            )
+            #pass prompt 1 to summarize search parameters
+            response = chat_server.chat(prompt_1)
+            print("Search Summary is: ", response)
 
-        match_product = re.search(r"Product:\s*(.+)\n", response)
-        product = match_product.group(1).strip() if match_product else ""
+            match_product = re.search(r"Product:\s*(.+)\n", response)
+            product = match_product.group(1).strip() if match_product else ""
 
-        match_brand = re.search(r"Brand:\s*(.+)\n", response)
-        brand = match_brand.group(1).strip() if match_brand else ""
+            match_brand = re.search(r"Brand:\s*(.+)\n", response)
+            brand = match_brand.group(1).strip() if match_brand else ""
+            if brand.lower() in ["not specified", "not provided", "unknown", "none", "n/a"]:
+                brand = ""
+            search_term = f"{brand} {product}".strip()
         
-        search_term = f"{brand} {product}".strip()
         print("Final Search Term is: ", search_term)
-        
         results = mm.search_product(search_term)
         # results = mm.single_thread_search_product(response)
 
