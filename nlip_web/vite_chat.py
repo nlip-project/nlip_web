@@ -52,18 +52,17 @@ class ChatSession(nlip_ext.StatefulSession):
         response = chat_server.chat(prompt_1)
         print("Search Summary is: ", response)
 
-        match = re.search(r"Product:\s*(.+)\n", response)
-        product = match.group(1).strip() if match else ""
-        print("Search product: ", product)
-        # pass search term to website_modules main search function
-        results = mm.search_product(product)
-        # results = mm.single_thread_search_product(response)
-        # print(results)
+        match_product = re.search(r"Product:\s*(.+)\n", response)
+        product = match_product.group(1).strip() if match_product else ""
 
-        # print(f'Received text {text[0:10]}...')
-        # response = chat_server.chat_multimodal(text, images = images)
-        # print(f'Received response {response[0:10]}...')
-        ## response_data = '{"Best Buy":[{"name":"Dell XPS 15","price":1299.99,"description":"15.6-inch FHD display, Intel Core i7, 16GB RAM, 512GB SSD"},{"name":"HP Pavilion 14","price":649.99,"description":"14-inch HD display, AMD Ryzen 5, 8GB RAM, 256GB SSD"}],"Amazon":[{"name":"Lenovo ThinkPad X1 Carbon","price":1549.99,"description":"14-inch 2K display, Intel Core i7, 16GB RAM, 1TB SSD, Business laptop"},{"name":"ASUS VivoBook 15","price":529.99,"description":"15.6-inch FHD display, Intel Core i5, 12GB RAM, 512GB SSD"}],"Walmart":[{"name":"Acer Aspire 5","price":479.99,"description":"15.6-inch FHD display, AMD Ryzen 3, 8GB RAM, 256GB SSD"},{"name":"Microsoft Surface Laptop 5","price":1199.99,"description":"13.5-inch PixelSense touchscreen, Intel Core i5, 8GB RAM, 256GB SSD"}]}'
+        match_brand = re.search(r"Brand:\s*(.+)\n", response)
+        brand = match_brand.group(1).strip() if match_brand else ""
+        
+        search_term = f"{brand} {product}".strip()
+        print("Final Search Term is: ", search_term)
+        
+        results = mm.search_product(search_term)
+        # results = mm.single_thread_search_product(response)
 
         products = nlip.NLIP_Factory.create_json(results)
         return products 

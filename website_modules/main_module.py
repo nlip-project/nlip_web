@@ -20,7 +20,7 @@ from . import  bestbuy_ca_module
 # from . import  walmart_ca_module
 
 # THREAD COUNT
-MAX_THREADS = 4
+MAX_THREADS = 5
 THREAD_PREFIX = "main_module_thread_"
 
 # Modules with completed search_product(str) functions
