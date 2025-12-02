@@ -5,6 +5,7 @@ from nlip_server import server
 from nlip_sdk import nlip
 
 from website_modules import main_module as mm
+import re
 
 class ChatApplication(nlip_ext.SafeStatefulApplication):
     def __init__(self):
@@ -51,22 +52,11 @@ class ChatSession(nlip_ext.StatefulSession):
         response = chat_server.chat(prompt_1)
         print("Search Summary is: ", response)
 
-        prompt_2 = (
-            "\"" + response + "\"\n"
-            "Convert this summary into a clean search bar string, for shopping wesites like Amazon Canada ,Home Depot Canada etc. "
-            "Format as a space-separated string: [Product Category] [Brand] [Key Technical Adjective]."
-            "Key Technical Adjective are derived from technical attributes and User Requirments interpret these to create meaningful Adjectives."
-            "Do not use symbols like '+' or '-' or '-' etc. Remove filler words like 'capable of', 'for', 'with'. "
-            "Return MAXIMUM 6 words. "
-            "Final returned optimized search term must be max 6 words long strict rule."
-            "Example output: 'Power Drill DeWalt Heavy Duty' or 'Phone 128gb Android, or 'Lumber 2x4', 'Speaker Wire Cable Managment Drywall'."
-        )
-        #pass prompt 2 to optimize search term
-        response = chat_server.chat(prompt_2)
-        print("\n\nShortened Optimized search: " ,response, "\n\n")
-        
+        match = re.search(r"Product:\s*(.+)\n", response)
+        product = match.group(1).strip() if match else ""
+        print("Search product: ", product)
         # pass search term to website_modules main search function
-        results = mm.search_product(response)
+        results = mm.search_product(product)
         # results = mm.single_thread_search_product(response)
         # print(results)
 

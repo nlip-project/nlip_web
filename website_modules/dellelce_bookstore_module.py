@@ -51,7 +51,7 @@ def search_product(query_term):
         # if first page is non-empty, query the next page. Otherwise no products matching the search term exist.
         if len(parsed_content) < 1:
             driver.quit()
-            return
+            return json.dumps(product_list)
 
         product_list = parsed_content
 
@@ -72,6 +72,7 @@ def search_product(query_term):
             product_list.extend(parsed_content)
     finally:
         driver.quit()    
+    print(product_list)
 
     return json.dumps(product_list)
 
@@ -128,8 +129,7 @@ def parse_site_content(html_content) -> list:
         # commerce-product-field is where price information is stored
         price_field = prod.find(class_="commerce-product-field")
         price = price_field.find("div", class_="field-item").text
-        temp_prod["price"] = (price[1:])
-        ## can potentially contain <del>price<del> If item is on sale.
+        temp_prod["price"] = (price.split(' ')[0]).replace('$','')
 
         # check if item has sizes:
         sizes_radio_group = prod.find(class_='attribute-widgets')

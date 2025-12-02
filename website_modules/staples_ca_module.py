@@ -61,9 +61,8 @@ def search_product(product_name: str):
         card = a_tag.find_parent("div", class_="product-thumbnail")
         price_el = card.select_one("span.money.pre-money") if card else None
         price = price_el.get_text(strip=True)
-        
         if price_el:
-            price = float(price[1:])
+            price = float(price[1:].replace(",", ""))
         else:
             price = 0.0
 
@@ -76,7 +75,7 @@ def search_product(product_name: str):
             results.append({
                 "store": STORE_NAME,
                 "name": text,
-                "price": price[1:],
+                "price": price,
                 "product_photo": img_src,
                 "description": "No description available",
                 "link": link
