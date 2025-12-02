@@ -8,6 +8,11 @@ readme = "README.md"
 [tool.poetry.dependencies]
 python = "^3.10"
 nlip-server = {path = "../nlip_server", develop = true}
+beautifulsoup4 = "^4.14.2"
+selenium = "^4.38.0"
+requests = "^2.32.5"
+webdriver-manager = "^4.0.2"
+lxml = "^6.0.2"
 
 
 [build-system]
@@ -17,4 +22,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.poetry.scripts]
 chat = "scripts:start_chat"
 image = "scripts:start_image"
+vite-text = "scripts:start_vite_text"
+vite-products = "scripts:start_vite_products"
+vite-image = "scripts:start_vite_image"
 
