@@ -15,11 +15,51 @@ export default function ProductResults({products, isLoading}) {
         return null;
     }
   }
+
+  const getStoreResults = () => {
+    const storeStats = {};
+    (products?.results ?? []).forEach(product => {
+      if (product.store) {
+        if (!storeStats[product.store]) {
+          storeStats[product.store] = {
+            count: 0,
+            minPrice: Number(product.price),
+            maxPrice: Number(product.price),
+            totalPrice: 0
+          };
+        }
+        storeStats[product.store].count += 1;
+        storeStats[product.store].totalPrice += Number(product.price);
+        storeStats[product.store].minPrice = Math.min(storeStats[product.store].minPrice, Number(product.price));
+        storeStats[product.store].maxPrice = Math.max(storeStats[product.store].maxPrice, Number(product.price));
+      }
+    });
+    return storeStats;
+  }
+
+  const storeStats = getStoreResults();
   return (
     <>
     {(products?.results?.length ?? 0) > 0 && (
       <div className="space-y-2">
-        <div  className="bg-white rounded-lg shadow-md p-6">
+        {/* Store stats summary */}
+        <div className="bg-white rounded-lg shadow-md p-4 mb-4">
+          <h2 className="text-xl font-semibold mb-2">Store Summary</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {Object.entries(storeStats).map(([store, stats]) => (
+              <div key={store} className="flex items-center space-x-3">
+                <img src={getStoreLogo(store)} alt={store} className="h-8" />
+                <div>
+                  <div className="font-medium text-gray-800">{store}</div>
+                  <div className="text-sm text-gray-600">Products: {stats.count}</div>
+                  <div className="text-sm text-gray-600">Min: ${stats.minPrice.toFixed(2)} | Max: ${stats.maxPrice.toFixed(2)}</div>
+                  <div className="text-sm text-gray-600">Avg: ${(stats.totalPrice / stats.count).toFixed(2)}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-md p-6">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {(products?.results ?? []).map((product, index) => {
               return (
