@@ -12,9 +12,9 @@ export default function SearchForm({ setProducts, isLoading, setIsLoading}) {
     setIsLoading(true);
     try {
       const response = await nlipClient.sendMessage(query.trim(), true)
-
       if (response && response.results.length > 0) {
-        response.results.sort((a,b) => a.price - b.price)
+        response.results = response.results.filter(product => !Number.isNaN(Number(product.price)));
+        response.results.sort((a,b) => Number(a.price) - Number(b.price))
         setProducts(response);
       }
     } catch (error) {

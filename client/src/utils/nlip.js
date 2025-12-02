@@ -371,7 +371,7 @@ class NLIPFactory {
 class NLIPClient {
   constructor(baseUrl = '', options = {}) {
     this.baseUrl = baseUrl;
-    this.options = { timeout: 30000, ...options };
+    this.options = { timeout: 60000, ...options };
     this.correlator = null
   }
 

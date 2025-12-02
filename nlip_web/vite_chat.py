@@ -37,7 +37,7 @@ class ChatSession(nlip_ext.StatefulSession):
         chat_server = self.nlip_app.retrieve_session_data(self.get_correlator())
         if chat_server is None: 
             return nlip.NLIP_Factory.create_text("Error: Can't find my chat server")
-        print ("\n\nUser Origional text: ", text, "\n\n")
+        print ("\n\nUser Original text: ", text, "\n\n")
 
         prompt_1 = (
             "\"" + text + "\"\n"
@@ -66,8 +66,8 @@ class ChatSession(nlip_ext.StatefulSession):
         print("\n\nShortened Optimized search: " ,response, "\n\n")
         
         # pass search term to website_modules main search function
-        # results = mm.search_product(response)
-        results = mm.single_thread_search_product(response)
+        results = mm.search_product(response)
+        # results = mm.single_thread_search_product(response)
         # print(results)
 
         # print(f'Received text {text[0:10]}...')

@@ -27,12 +27,6 @@ export default function ProductResults({products, isLoading}) {
                       </p>
                     )}
 
-                    {product.description && (
-                      <p className="text-sm text-gray-600 mb-2">
-                        {product.description}
-                      </p>
-                    )}
-
                     <p className="text-lg font-bold text-green-600">
                       ${product.price}
                     </p>
